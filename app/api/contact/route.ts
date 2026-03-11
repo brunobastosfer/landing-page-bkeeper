@@ -3,12 +3,9 @@ import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// IMPORTANTE: O Resend no modo sandbox (domínio onboarding@resend.dev) só entrega
-// para o e-mail cadastrado na sua conta Resend. Para receber em qualquer e-mail
-// (ex: Gmail), você precisa verificar um domínio próprio em resend.com/domains
-// e trocar o "from" para: noreply@seudominio.com.br
-// Enquanto isso, o e-mail de destino é definido pela variável RESEND_TO_EMAIL.
-// Se ela não existir, usamos o próprio e-mail do remetente do formulário como fallback.
+// Domínio: bkeeperads.com.br — verifique em resend.com/domains se ainda não o fez.
+// O "from" usa noreply@bkeeperads.com.br e o "to" é atendimento@bkeeperads.com.br.
+// RESEND_TO_EMAIL pode sobrescrever o destino via variável de ambiente.
 
 function buildEmailHtml(name: string, email: string, phone: string | undefined, revenue: string, message: string) {
   return `
@@ -84,13 +81,12 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // No sandbox do Resend (onboarding@resend.dev), o "to" precisa ser
-    // o e-mail verificado da sua conta. Configure RESEND_TO_EMAIL nas variáveis
-    // de ambiente com o e-mail cadastrado na sua conta resend.com.
-    const toEmail = process.env.RESEND_TO_EMAIL ?? email
+    // Destino: atendimento@bkeeperads.com.br (e-mail da conta Resend).
+    // RESEND_TO_EMAIL sobrescreve se definida.
+    const toEmail = process.env.RESEND_TO_EMAIL ?? "atendimento@bkeeperads.com.br"
 
     const { data, error } = await resend.emails.send({
-      from: "Bkeeper ADS <onboarding@resend.dev>",
+      from: "Bkeeper ADS <noreply@bkeeperads.com.br>",
       to: [toEmail],
       replyTo: [email],
       subject: `[Bkeeper ADS] Nova mensagem de ${name}`,
