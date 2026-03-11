@@ -84,7 +84,8 @@ export async function POST(req: NextRequest) {
 
     const { data, error } = await resend.emails.send({
       from: "Bkeeper ADS <noreply@bkeeperads.com.br>",
-      to: ["bkeeperads.contato@gmail.com"],
+      to: ["atendimento@bkeeperads.com.br"],
+      cc: ["bkeeperads.contato@gmail.com"],
       replyTo: [`${name} <${email}>`],
       subject: `[Bkeeper ADS] Nova mensagem de ${name}`,
       html: buildEmailHtml(name, email, phone, revenue, message),
