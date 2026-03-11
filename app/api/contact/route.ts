@@ -3,9 +3,10 @@ import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// Domínio: bkeeperads.com.br — verifique em resend.com/domains se ainda não o fez.
-// O "from" usa noreply@bkeeperads.com.br e o "to" é atendimento@bkeeperads.com.br.
-// RESEND_TO_EMAIL pode sobrescrever o destino via variável de ambiente.
+// Domínio bkeeperads.com.br verificado no Resend.
+// "from": noreply@bkeeperads.com.br
+// "to": bkeeperads.contato@gmail.com
+// "replyTo": e-mail de quem preencheu o formulário — ao clicar em "Responder", a resposta vai direto para o cliente.
 
 function buildEmailHtml(name: string, email: string, phone: string | undefined, revenue: string, message: string) {
   return `
@@ -81,14 +82,10 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Destino: atendimento@bkeeperads.com.br (e-mail da conta Resend).
-    // RESEND_TO_EMAIL sobrescreve se definida.
-    const toEmail = process.env.RESEND_TO_EMAIL ?? "atendimento@bkeeperads.com.br"
-
     const { data, error } = await resend.emails.send({
       from: "Bkeeper ADS <noreply@bkeeperads.com.br>",
-      to: [toEmail],
-      replyTo: [email],
+      to: ["bkeeperads.contato@gmail.com"],
+      replyTo: [`${name} <${email}>`],
       subject: `[Bkeeper ADS] Nova mensagem de ${name}`,
       html: buildEmailHtml(name, email, phone, revenue, message),
     })
