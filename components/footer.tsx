@@ -90,7 +90,7 @@ export function Footer() {
 
         <div className="border-t border-[#1e1e1e] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[#f5f0e8]/30">
-            © 2019 Bkeeper ADS. Todos os direitos reservados.
+            © 2022 Bkeeper ADS. Todos os direitos reservados.
           </p>
           <p className="text-xs text-[#f5f0e8]/30">
             Feito com tecnologia e estratégia.
