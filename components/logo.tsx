@@ -32,7 +32,7 @@ export function Logo({ className = "", size = "md", showText = false }: LogoProp
           height={s.icon}
           width={s.icon}
           priority
-          style={{ objectFit: "contain" }}
+          style={{ objectFit: "contain", width: "auto", height: "auto" }}
         />
       </div>
       
