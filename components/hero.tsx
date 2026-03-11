@@ -69,11 +69,6 @@ export function Hero() {
 
       {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#E6BF46]/30 bg-[#E6BF46]/5 text-[#E6BF46] text-sm font-semibold mb-8">
-          <span className="w-2 h-2 rounded-full bg-[#E6BF46] animate-pulse" />
-          Tecnologia que gera resultado
-        </div>
-
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-balance leading-tight mb-6">
           Sua empresa merece{" "}
           <br className="hidden md:block" />
