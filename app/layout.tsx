@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   generator: 'Bkeeper Ads',
   keywords: ['marketing digital', 'tráfego pago', 'programação', 'Google Ads', 'Meta Ads', 'desenvolvimento de software', 'visão computacional', 'realidade aumentada'],
   icons: {
-    icon: '/favicon.svg',
+    icon: '/favicon.jpg',
   },
 }
 
