@@ -3,7 +3,7 @@ import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-const OWNER_EMAIL = "bkeeperads.contato@gmail.com"
+const OWNER_EMAIL = "atendimento@bkeeperads.com.br"
 
 // Email recebido por você
 function buildLeadEmailHtml(
