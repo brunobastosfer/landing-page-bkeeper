@@ -38,7 +38,7 @@ function buildEmailHtml(name: string, email: string, phone: string | undefined, 
       </div>
 
       <div style="margin-top: 32px; text-align: center;">
-        <a href="https://wa.me/5517991215076" style="display: inline-block; padding: 12px 28px; background: #E6BF46; color: #080808; font-weight: 700; border-radius: 8px; text-decoration: none; font-size: 14px;">
+        <a href="https://wa.me/5517991215076?text=Olá%20Bkeeper%20ADS%2C%20gostaria%20de%20conversar%20sobre%20meu%20projeto" style="display: inline-block; padding: 12px 28px; background: #E6BF46; color: #080808; font-weight: 700; border-radius: 8px; text-decoration: none; font-size: 14px; target: _blank">
           Responder via WhatsApp
         </a>
       </div>
