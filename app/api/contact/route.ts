@@ -80,6 +80,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { data, error } = await resend.emails.send({
+      from: "noreply@bkeeperads.com.br",
       to: [email],
       subject: `[Bkeeper ADS] Agradecemos sua mensagem, ${name}!`,
       html: buildEmailHtml(name, email, phone, revenue, message),
