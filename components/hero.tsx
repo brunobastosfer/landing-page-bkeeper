@@ -3,126 +3,138 @@
 import { useEffect, useState } from "react"
 import { ArrowRight, ChevronDown } from "lucide-react"
 
-const typingPhrases = [
+const phrases = [
   "Tráfego Pago",
   "Marketing Digital",
-  "Desenvolvimento de Software",
+  "Desenvolvimento Web",
+  "Aplicativos Mobile",
   "Visão Computacional",
   "Realidade Aumentada",
-  "Dashboards em Tempo Real",
-  "Crescimento Inteligente",
+  "Dashboards Inteligentes",
+  "Growth Hacking",
 ]
 
-function TypingText() {
+export function Hero() {
   const [phraseIndex, setPhraseIndex] = useState(0)
   const [displayed, setDisplayed] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
   const [charIndex, setCharIndex] = useState(0)
 
   useEffect(() => {
-    const current = typingPhrases[phraseIndex]
+    const current = phrases[phraseIndex]
     let timeout: ReturnType<typeof setTimeout>
 
     if (!isDeleting && charIndex <= current.length) {
       timeout = setTimeout(() => {
         setDisplayed(current.slice(0, charIndex))
-        setCharIndex((i) => i + 1)
-        if (charIndex === current.length) {
-          timeout = setTimeout(() => setIsDeleting(true), 1800)
-        }
-      }, 60)
+        setCharIndex((c) => c + 1)
+      }, 80)
+    } else if (!isDeleting && charIndex > current.length) {
+      timeout = setTimeout(() => setIsDeleting(true), 1800)
     } else if (isDeleting && charIndex >= 0) {
       timeout = setTimeout(() => {
         setDisplayed(current.slice(0, charIndex))
-        setCharIndex((i) => i - 1)
-        if (charIndex === 0) {
-          setIsDeleting(false)
-          setPhraseIndex((i) => (i + 1) % typingPhrases.length)
-        }
-      }, 35)
+        setCharIndex((c) => c - 1)
+      }, 45)
+    } else {
+      setIsDeleting(false)
+      setPhraseIndex((i) => (i + 1) % phrases.length)
+      setCharIndex(0)
     }
 
     return () => clearTimeout(timeout)
   }, [charIndex, isDeleting, phraseIndex])
 
   return (
-    <span className="gold-shimmer typing-cursor font-black">
-      {displayed}
-    </span>
-  )
-}
-
-export function Hero() {
-  return (
     <section
       id="inicio"
-      className="relative min-h-screen flex flex-col items-center justify-center honeycomb-bg overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden honeycomb-bg"
     >
-      {/* Background radial glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gold/5 blur-[120px]" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-gold/4 blur-[100px] rounded-full" />
-      </div>
-
-      {/* Grid overlay */}
+      {/* Background glow */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{
-          backgroundImage:
-            "linear-gradient(rgba(230,191,70,1) 1px, transparent 1px), linear-gradient(90deg, rgba(230,191,70,1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
+          background:
+            "radial-gradient(circle, rgba(230,191,70,0.08) 0%, transparent 70%)",
         }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center pt-24 pb-16">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 border border-gold/30 bg-gold/10 text-gold text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-8">
-          <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-          Tecnologia que gera resultados
+      {/* Top-left decorative hex lines */}
+      <div className="absolute top-20 left-6 opacity-20 hidden lg:block">
+        <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+          <polygon points="60,5 110,32 110,88 60,115 10,88 10,32" stroke="#E6BF46" strokeWidth="1" fill="none" />
+          <polygon points="60,20 95,39 95,81 60,100 25,81 25,39" stroke="#E6BF46" strokeWidth="0.5" fill="none" />
+        </svg>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#E6BF46]/30 bg-[#E6BF46]/5 text-[#E6BF46] text-sm font-semibold mb-8">
+          <span className="w-2 h-2 rounded-full bg-[#E6BF46] animate-pulse" />
+          Tecnologia que gera resultado
         </div>
 
-        {/* Main headline */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-foreground leading-tight text-balance mb-4">
-          Impulsione seu negócio com
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-balance leading-tight mb-6">
+          Sua empresa merece{" "}
+          <br className="hidden md:block" />
+          <span
+            className="typing-cursor"
+            style={{
+              color: "#E6BF46",
+              display: "inline-block",
+              minWidth: "2ch",
+            }}
+          >
+            {displayed}
+          </span>
         </h1>
-        <div className="text-4xl sm:text-6xl md:text-7xl font-black leading-tight min-h-[1.2em] mb-8">
-          <TypingText />
-        </div>
 
-        {/* Subheadline */}
-        <p className="text-muted-foreground text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed mb-12 text-pretty">
-          Unimos estratégia, criatividade e tecnologia de ponta para transformar sua empresa em uma máquina de resultados — do primeiro clique à conversão.
+        <p className="text-lg md:text-xl text-[#f5f0e8]/60 max-w-2xl mx-auto leading-relaxed mb-10 text-pretty">
+          Unimos estratégia de marketing, tráfego pago e tecnologia de ponta para
+          transformar sua empresa num negócio digital de alta performance.
         </p>
 
-        {/* CTA buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
             href="#contato"
-            className="group inline-flex items-center gap-2 bg-gold text-primary-foreground px-8 py-3.5 rounded-full font-bold text-base hover:bg-gold-muted transition-all duration-200 gold-glow hover:scale-105"
+            className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[#E6BF46] text-[#080808] font-bold text-base hover:bg-[#c9a83a] transition-all duration-200 gold-glow"
           >
-            Começar agora
+            Quero crescer agora
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </a>
           <a
-            href="https://wa.me/5517991215076"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-border text-foreground px-8 py-3.5 rounded-full font-bold text-base hover:border-gold/50 hover:text-gold transition-all duration-200"
+            href="#servicos"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-[#242424] text-[#f5f0e8]/70 font-semibold text-base hover:border-[#E6BF46]/40 hover:text-[#E6BF46] transition-all duration-200"
           >
-            Falar no WhatsApp
+            Ver serviços
           </a>
         </div>
 
-        {/* Scroll indicator */}
-        <a
-          href="#servicos"
-          className="mt-20 inline-flex flex-col items-center gap-2 text-muted-foreground hover:text-gold transition-colors"
-          aria-label="Ver serviços"
-        >
-          <span className="text-xs font-semibold tracking-widest uppercase">Nossos serviços</span>
-          <ChevronDown size={20} className="animate-bounce" />
-        </a>
+        {/* Stats row */}
+        <div className="mt-16 grid grid-cols-3 gap-6 max-w-lg mx-auto">
+          {[
+            { value: "+150", label: "Projetos entregues" },
+            { value: "+3x", label: "ROI médio dos clientes" },
+            { value: "24h", label: "Suporte dedicado" },
+          ].map((stat) => (
+            <div key={stat.label} className="text-center">
+              <div className="text-2xl md:text-3xl font-black" style={{ color: "#E6BF46" }}>
+                {stat.value}
+              </div>
+              <div className="text-xs text-[#f5f0e8]/50 mt-1 font-medium">{stat.label}</div>
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* Scroll indicator */}
+      <a
+        href="#servicos"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-[#f5f0e8]/30 hover:text-[#E6BF46] transition-colors"
+        aria-label="Rolar para baixo"
+      >
+        <ChevronDown size={24} className="animate-bounce" />
+      </a>
     </section>
   )
 }

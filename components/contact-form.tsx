@@ -1,227 +1,193 @@
 "use client"
 
 import { useState } from "react"
-import { Send, MessageCircle, Mail, CheckCircle2 } from "lucide-react"
+import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
+
+type FormState = "idle" | "loading" | "success" | "error"
 
 const revenueOptions = [
-  "Até R$ 10.000/mês",
-  "R$ 10.000 – R$ 50.000/mês",
-  "R$ 50.000 – R$ 150.000/mês",
-  "R$ 150.000 – R$ 500.000/mês",
-  "Acima de R$ 500.000/mês",
+  "Ainda não tenho faturamento",
+  "Até R$ 10 mil/mês",
+  "R$ 10 mil – R$ 50 mil/mês",
+  "R$ 50 mil – R$ 150 mil/mês",
+  "R$ 150 mil – R$ 500 mil/mês",
+  "Acima de R$ 500 mil/mês",
 ]
 
-interface FormData {
-  name: string
-  email: string
-  phone: string
-  company: string
-  revenue: string
-  message: string
-}
-
 export function ContactForm() {
-  const [form, setForm] = useState<FormData>({
-    name: "",
-    email: "",
-    phone: "",
-    company: "",
-    revenue: "",
-    message: "",
-  })
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState("")
+  const [state, setState] = useState<FormState>("idle")
+  const [errorMsg, setErrorMsg] = useState("")
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setError("")
-    if (!form.revenue) {
-      setError("Por favor, informe o faturamento anual.")
-      return
+    setState("loading")
+    setErrorMsg("")
+
+    const form = e.currentTarget
+    const data = {
+      name: (form.elements.namedItem("name") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
+      revenue: (form.elements.namedItem("revenue") as HTMLSelectElement).value,
+      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
     }
-    setLoading(true)
+
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(data),
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || "Erro ao enviar mensagem.")
-      setSuccess(true)
-      setForm({ name: "", email: "", phone: "", company: "", revenue: "", message: "" })
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Erro ao enviar mensagem.")
-    } finally {
-      setLoading(false)
+
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || "Erro ao enviar mensagem")
+      setState("success")
+      form.reset()
+    } catch (err) {
+      setState("error")
+      setErrorMsg(err instanceof Error ? err.message : "Erro inesperado. Tente novamente.")
     }
   }
 
   const inputClass =
-    "w-full bg-secondary border border-border text-foreground placeholder:text-muted-foreground rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/30 transition-all duration-200"
+    "w-full px-4 py-3 rounded-xl bg-[#1a1a1a] border border-[#2e2e2e] text-foreground text-sm placeholder-[#555] focus:outline-none focus:border-[#E6BF46] focus:ring-1 focus:ring-[#E6BF46]/30 transition-all"
+
+  const labelClass = "block text-sm font-semibold text-[#f5f0e8]/80 mb-1.5"
 
   return (
-    <section id="contato" className="py-24 sm:py-32 relative">
-      <div className="absolute top-0 left-0 right-0 h-px bg-border" />
-      {/* Background glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gold/4 blur-[120px] rounded-full pointer-events-none" />
+    <section id="contato" className="py-28 px-6 relative overflow-hidden">
+      {/* Background */}
+      <div
+        className="absolute left-0 bottom-0 w-[500px] h-[500px] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 0% 100%, rgba(230,191,70,0.05) 0%, transparent 60%)",
+        }}
+      />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* Left info */}
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          {/* Left — info */}
           <div>
-            <span className="inline-block text-gold text-xs font-bold tracking-widest uppercase mb-4">
+            <span className="inline-block px-4 py-1.5 rounded-full border border-[#E6BF46]/30 bg-[#E6BF46]/5 text-[#E6BF46] text-sm font-semibold mb-6">
               Entre em contato
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-foreground leading-tight text-balance mb-6">
+            <h2 className="text-3xl md:text-5xl font-black text-balance leading-tight mb-6">
               Pronto para{" "}
-              <span className="gold-shimmer">decolar?</span>
+              <span className="gold-shimmer">escalar seu negócio?</span>
             </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed mb-10 text-pretty">
-              Preencha o formulário e nossa equipe entrará em contato em até 24 horas. Vamos entender seu negócio e apresentar a melhor estratégia para você.
+            <p className="text-[#f5f0e8]/60 text-lg leading-relaxed mb-10">
+              Preencha o formulário e um especialista da Bkeeper ADS entrará em
+              contato para entender seus objetivos e apresentar a melhor solução.
             </p>
 
-            <div className="space-y-5">
-              <a
-                href="https://wa.me/5517991215076"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 bg-card border border-border rounded-2xl hover:border-gold/40 transition-all duration-200 group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-[#25D366]/10 flex items-center justify-center group-hover:bg-[#25D366]/20 transition-colors shrink-0">
-                  <MessageCircle size={22} className="text-[#25D366]" />
+            <div className="flex flex-col gap-5">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-[#E6BF46]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-[#E6BF46] font-bold text-sm">01</span>
                 </div>
                 <div>
-                  <p className="text-foreground font-bold text-sm">WhatsApp</p>
-                  <p className="text-muted-foreground text-sm">+55 17 99121-5076</p>
+                  <p className="font-bold text-foreground">Análise gratuita</p>
+                  <p className="text-sm text-[#f5f0e8]/55">Entendemos seu negócio sem custo algum</p>
                 </div>
-              </a>
-
-              <div className="flex items-center gap-4 p-4 bg-card border border-border rounded-2xl">
-                <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
-                  <Mail size={22} className="text-gold" />
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-[#E6BF46]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-[#E6BF46] font-bold text-sm">02</span>
                 </div>
                 <div>
-                  <p className="text-foreground font-bold text-sm">E-mail</p>
-                  <p className="text-muted-foreground text-sm">bkeeperads.contato@gmail.com</p>
+                  <p className="font-bold text-foreground">Estratégia personalizada</p>
+                  <p className="text-sm text-[#f5f0e8]/55">Proposta feita especialmente para você</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-[#E6BF46]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-[#E6BF46] font-bold text-sm">03</span>
+                </div>
+                <div>
+                  <p className="font-bold text-foreground">Resultados mensuráveis</p>
+                  <p className="text-sm text-[#f5f0e8]/55">ROI real e métricas claras desde o dia 1</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right form */}
-          <div className="bg-card border border-border rounded-3xl p-8 relative overflow-hidden">
-            {/* Corner accent */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-bl-[80px]" />
-
-            {success ? (
-              <div className="flex flex-col items-center text-center py-12 gap-4">
-                <div className="w-16 h-16 rounded-full bg-gold/15 flex items-center justify-center">
-                  <CheckCircle2 size={32} className="text-gold" />
-                </div>
-                <h3 className="text-foreground font-black text-xl">Mensagem enviada!</h3>
-                <p className="text-muted-foreground text-sm max-w-xs">
-                  Obrigado pelo contato! Nossa equipe retornará em até 24 horas.
+          {/* Right — form */}
+          <div className="rounded-2xl border border-[#242424] bg-[#111111] p-8">
+            {state === "success" ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
+                <CheckCircle size={56} className="text-[#E6BF46]" />
+                <h3 className="text-xl font-bold text-foreground">Mensagem enviada!</h3>
+                <p className="text-[#f5f0e8]/60 max-w-sm">
+                  Obrigado pelo contato. Nossa equipe retornará em breve.
                 </p>
                 <button
-                  onClick={() => setSuccess(false)}
-                  className="mt-4 text-gold text-sm font-bold hover:underline"
+                  onClick={() => setState("idle")}
+                  className="mt-4 px-6 py-2.5 rounded-xl border border-[#E6BF46]/40 text-[#E6BF46] font-semibold text-sm hover:bg-[#E6BF46]/10 transition-colors"
                 >
-                  Enviar outra mensagem
+                  Enviar nova mensagem
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
-                <h3 className="text-foreground font-black text-xl mb-6">Fale com nosso time</h3>
-
-                <div className="grid sm:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-foreground text-xs font-bold mb-1.5 uppercase tracking-wide" htmlFor="name">
-                      Nome *
+                    <label htmlFor="name" className={labelClass}>
+                      Nome completo <span className="text-[#E6BF46]">*</span>
                     </label>
                     <input
                       id="name"
                       name="name"
                       type="text"
                       required
-                      placeholder="Seu nome"
-                      value={form.name}
-                      onChange={handleChange}
+                      placeholder="João Silva"
                       className={inputClass}
                     />
                   </div>
                   <div>
-                    <label className="block text-foreground text-xs font-bold mb-1.5 uppercase tracking-wide" htmlFor="email">
-                      E-mail *
+                    <label htmlFor="email" className={labelClass}>
+                      E-mail <span className="text-[#E6BF46]">*</span>
                     </label>
                     <input
                       id="email"
                       name="email"
                       type="email"
                       required
-                      placeholder="seu@email.com"
-                      value={form.email}
-                      onChange={handleChange}
-                      className={inputClass}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-foreground text-xs font-bold mb-1.5 uppercase tracking-wide" htmlFor="phone">
-                      Telefone
-                    </label>
-                    <input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      placeholder="(17) 99999-9999"
-                      value={form.phone}
-                      onChange={handleChange}
-                      className={inputClass}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-foreground text-xs font-bold mb-1.5 uppercase tracking-wide" htmlFor="company">
-                      Empresa
-                    </label>
-                    <input
-                      id="company"
-                      name="company"
-                      type="text"
-                      placeholder="Nome da empresa"
-                      value={form.company}
-                      onChange={handleChange}
+                      placeholder="joao@empresa.com"
                       className={inputClass}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-foreground text-xs font-bold mb-1.5 uppercase tracking-wide" htmlFor="revenue">
-                    Faturamento Mensal *
+                  <label htmlFor="phone" className={labelClass}>
+                    Telefone / WhatsApp
+                  </label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="(17) 99999-9999"
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="revenue" className={labelClass}>
+                    Faturamento anual da empresa <span className="text-[#E6BF46]">*</span>
                   </label>
                   <select
                     id="revenue"
                     name="revenue"
                     required
-                    value={form.revenue}
-                    onChange={handleChange}
+                    defaultValue=""
                     className={`${inputClass} appearance-none cursor-pointer`}
                   >
                     <option value="" disabled>
-                      Selecione o faturamento
+                      Selecione uma faixa
                     </option>
                     {revenueOptions.map((opt) => (
-                      <option key={opt} value={opt} className="bg-card">
+                      <option key={opt} value={opt} className="bg-[#1a1a1a]">
                         {opt}
                       </option>
                     ))}
@@ -229,37 +195,39 @@ export function ContactForm() {
                 </div>
 
                 <div>
-                  <label className="block text-foreground text-xs font-bold mb-1.5 uppercase tracking-wide" htmlFor="message">
-                    Mensagem
+                  <label htmlFor="message" className={labelClass}>
+                    Mensagem <span className="text-[#E6BF46]">*</span>
                   </label>
                   <textarea
                     id="message"
                     name="message"
+                    required
                     rows={4}
-                    placeholder="Conte sobre seu projeto ou desafio..."
-                    value={form.message}
-                    onChange={handleChange}
+                    placeholder="Conte-nos sobre seu projeto ou desafio atual..."
                     className={`${inputClass} resize-none`}
                   />
                 </div>
 
-                {error && (
-                  <p className="text-red-400 text-sm font-medium">{error}</p>
+                {state === "error" && (
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                    <AlertCircle size={16} className="flex-shrink-0" />
+                    {errorMsg}
+                  </div>
                 )}
 
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 bg-gold text-primary-foreground py-3.5 rounded-xl font-bold text-base hover:bg-gold-muted transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed gold-glow"
+                  disabled={state === "loading"}
+                  className="flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-[#E6BF46] text-[#080808] font-bold text-base hover:bg-[#c9a83a] disabled:opacity-60 disabled:cursor-not-allowed transition-all gold-glow"
                 >
-                  {loading ? (
+                  {state === "loading" ? (
                     <>
-                      <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                      <Loader2 size={18} className="animate-spin" />
                       Enviando...
                     </>
                   ) : (
                     <>
-                      <Send size={16} />
+                      <Send size={18} />
                       Enviar mensagem
                     </>
                   )}

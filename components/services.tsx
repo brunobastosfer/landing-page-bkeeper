@@ -1,14 +1,10 @@
-"use client"
-
-import { useState } from "react"
 import {
   Code2,
-  BarChart3,
+  LayoutDashboard,
   Users,
   TrendingUp,
   Eye,
-  Layers,
-  ChevronRight,
+  Glasses,
 } from "lucide-react"
 
 const services = [
@@ -26,7 +22,7 @@ const services = [
     ],
   },
   {
-    icon: BarChart3,
+    icon: LayoutDashboard,
     title: "Monitoramento de Dados",
     description:
       "Dashboards inteligentes e monitoramento em tempo real para que você tenha total controle sobre os dados do seu negócio.",
@@ -42,7 +38,7 @@ const services = [
     icon: Users,
     title: "Equipe de Tecnologia",
     description:
-      "Fornecemos profissionais qualificados para integrar sua equipe com expertise em diversas stacks e metodologias.",
+      "Fornecemos profissionais qualificados para integrar sua equipe de tecnologia, com expertise em diversas stacks e metodologias.",
     items: [
       "Desenvolvedores Full-Stack",
       "Designers UI/UX",
@@ -55,7 +51,7 @@ const services = [
     icon: TrendingUp,
     title: "Tráfego Pago & Marketing",
     description:
-      "Estratégias de marketing digital e tráfego pago para impulsionar a visibilidade e o crescimento da sua empresa.",
+      "Estratégias de marketing digital e tráfego pago para impulsionar a visibilidade e o crescimento da sua empresa no mercado.",
     items: [
       "Google Ads & Meta Ads",
       "SEO & Performance",
@@ -68,109 +64,80 @@ const services = [
     icon: Eye,
     title: "Visão Computacional",
     description:
-      "Soluções de IA com visão computacional para automatizar processos, detectar padrões e extrair inteligência das imagens.",
+      "Soluções avançadas de visão computacional para automação, análise de imagens e reconhecimento de padrões com IA.",
     items: [
       "Reconhecimento de Objetos",
-      "Análise de Imagem & Vídeo",
-      "Controle de Qualidade por IA",
-      "Detecção de Anomalias",
-      "Processamento em Tempo Real",
+      "Análise de Imagens com IA",
+      "Detecção em Tempo Real",
+      "Automação Visual",
+      "Modelos de Deep Learning",
     ],
   },
   {
-    icon: Layers,
+    icon: Glasses,
     title: "Realidade Aumentada",
     description:
-      "Experiências imersivas de AR para produtos, treinamentos e campanhas de marketing que encantam e engajam.",
+      "Experiências imersivas de realidade aumentada para varejo, treinamento, marketing e aplicações industriais.",
     items: [
       "AR para E-commerce",
-      "Treinamento Empresarial em AR",
-      "Experiências Interativas",
-      "Visualização 3D de Produtos",
-      "Campanhas de Marketing em AR",
+      "Treinamentos Imersivos",
+      "Campanhas de Marketing AR",
+      "Visualização de Produtos 3D",
+      "Aplicações Industriais",
     ],
   },
 ]
 
 export function Services() {
-  const [hovered, setHovered] = useState<number | null>(null)
-
   return (
-    <section id="servicos" className="py-24 sm:py-32 relative">
-      {/* Section background accent */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-border" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="servicos" className="py-28 px-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <span className="inline-block text-gold text-xs font-bold tracking-widest uppercase mb-3">
+          <span className="inline-block px-4 py-1.5 rounded-full border border-[#E6BF46]/30 bg-[#E6BF46]/5 text-[#E6BF46] text-sm font-semibold mb-4">
             O que fazemos
           </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-foreground text-balance mb-4">
-            Soluções completas para sua{" "}
-            <span className="gold-shimmer">empresa crescer</span>
+          <h2 className="text-3xl md:text-5xl font-black text-balance">
+            Soluções completas para seu{" "}
+            <span className="gold-shimmer">crescimento digital</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto text-pretty">
-            Do tráfego pago ao desenvolvimento de software avançado, temos o que
-            você precisa para competir no mercado digital.
+          <p className="mt-4 text-[#f5f0e8]/55 text-lg max-w-2xl mx-auto text-pretty">
+            Da estratégia à execução — marketing, tecnologia e inovação em um único lugar.
           </p>
         </div>
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service, i) => {
+          {services.map((service) => {
             const Icon = service.icon
-            const isHovered = hovered === i
             return (
               <div
                 key={service.title}
-                onMouseEnter={() => setHovered(i)}
-                onMouseLeave={() => setHovered(null)}
-                className={`group relative rounded-2xl border p-7 cursor-default transition-all duration-300 ${
-                  isHovered
-                    ? "border-gold/50 bg-card shadow-xl shadow-gold/10 -translate-y-1"
-                    : "border-border bg-card hover:border-border"
-                }`}
+                className="group relative flex flex-col p-7 rounded-2xl border border-[#242424] bg-[#111111] hover:border-[#E6BF46]/40 transition-all duration-300 hover:bg-[#141414]"
               >
-                {/* Corner accent */}
-                <div
-                  className={`absolute top-0 right-0 w-20 h-20 rounded-bl-[100px] rounded-tr-2xl transition-opacity duration-300 ${
-                    isHovered ? "opacity-100" : "opacity-0"
-                  } bg-gold/10`}
-                />
-
                 {/* Icon */}
-                <div
-                  className={`inline-flex items-center justify-center w-12 h-12 rounded-xl mb-5 transition-all duration-300 ${
-                    isHovered ? "bg-gold text-primary-foreground scale-110" : "bg-secondary text-gold"
-                  }`}
-                >
-                  <Icon size={22} />
+                <div className="w-12 h-12 rounded-xl bg-[#E6BF46]/10 border border-[#E6BF46]/20 flex items-center justify-center mb-5 group-hover:bg-[#E6BF46]/15 transition-colors">
+                  <Icon size={22} className="text-[#E6BF46]" />
                 </div>
 
-                <h3 className="text-foreground font-bold text-lg mb-2">
-                  {service.title}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-5">
+                <h3 className="text-lg font-bold text-foreground mb-2">{service.title}</h3>
+                <p className="text-[#f5f0e8]/55 text-sm leading-relaxed mb-5">
                   {service.description}
                 </p>
 
-                <ul className="space-y-2">
+                <ul className="mt-auto flex flex-col gap-2">
                   {service.items.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-2 text-sm text-muted-foreground"
-                    >
-                      <ChevronRight
-                        size={14}
-                        className={`shrink-0 transition-colors ${
-                          isHovered ? "text-gold" : "text-border"
-                        }`}
-                      />
+                    <li key={item} className="flex items-center gap-2 text-sm text-[#f5f0e8]/70">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E6BF46] flex-shrink-0" />
                       {item}
                     </li>
                   ))}
                 </ul>
+
+                {/* Hover glow */}
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                  style={{ boxShadow: "inset 0 0 0 1px rgba(230,191,70,0.2)" }}
+                />
               </div>
             )
           })}

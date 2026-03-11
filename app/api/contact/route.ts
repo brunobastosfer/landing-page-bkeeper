@@ -1,78 +1,82 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json()
-    const { name, email, phone, company, revenue, message } = body
+    const { name, email, phone, revenue, message } = await req.json()
 
-    if (!name || !email || !revenue) {
+    if (!name || !email || !revenue || !message) {
       return NextResponse.json(
-        { error: "Nome, e-mail e faturamento são obrigatórios." },
+        { error: "Preencha todos os campos obrigatórios." },
         { status: 400 }
       )
     }
 
-    const { data, error } = await resend.emails.send({
-      from: "Bkeeper Ads <onboarding@resend.dev>",
+    const { error } = await resend.emails.send({
+      from: "Bkeeper ADS <onboarding@resend.dev>",
       to: ["bkeeperads.contato@gmail.com"],
       replyTo: email,
-      subject: `Novo contato de ${name} — Bkeeper Ads`,
+      subject: `[Bkeeper ADS] Nova mensagem de ${name}`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #080808; color: #f5f0e8; padding: 32px; border-radius: 16px;">
-          <div style="border-bottom: 2px solid #E6BF46; padding-bottom: 20px; margin-bottom: 24px;">
-            <h1 style="color: #E6BF46; margin: 0; font-size: 24px;">Bkeeper <span style="font-size: 14px; letter-spacing: 4px;">ADS</span></h1>
-            <p style="color: #888; margin: 4px 0 0;">Novo contato via formulário do site</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #080808; color: #f5f0e8; padding: 32px; border-radius: 12px;">
+          <div style="text-align:center; margin-bottom: 28px;">
+            <h1 style="color: #E6BF46; font-size: 24px; margin: 0;">Bkeeper <span>ADS</span></h1>
+            <p style="color: #888; font-size: 13px; margin-top: 4px;">Nova mensagem recebida pelo site</p>
           </div>
 
-          <table style="width: 100%; border-collapse: collapse;">
+          <table style="width:100%; border-collapse: collapse;">
             <tr>
-              <td style="padding: 10px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px; width: 160px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Nome</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #242424; color: #f5f0e8; font-size: 15px;">${name}</td>
+              <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px; width: 140px;">Nome</td>
+              <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #f5f0e8; font-size: 14px; font-weight: 600;">${name}</td>
             </tr>
             <tr>
-              <td style="padding: 10px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">E-mail</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #242424; color: #f5f0e8; font-size: 15px;"><a href="mailto:${email}" style="color: #E6BF46;">${email}</a></td>
+              <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px;">E-mail</td>
+              <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #E6BF46; font-size: 14px;"><a href="mailto:${email}" style="color:#E6BF46; text-decoration:none;">${email}</a></td>
             </tr>
-            ${phone ? `<tr>
-              <td style="padding: 10px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Telefone</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #242424; color: #f5f0e8; font-size: 15px;">${phone}</td>
-            </tr>` : ""}
-            ${company ? `<tr>
-              <td style="padding: 10px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Empresa</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #242424; color: #f5f0e8; font-size: 15px;">${company}</td>
-            </tr>` : ""}
             <tr>
-              <td style="padding: 10px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Faturamento</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #242424;">
-                <span style="background: #E6BF46; color: #080808; font-size: 13px; font-weight: bold; padding: 3px 10px; border-radius: 20px;">${revenue}</span>
-              </td>
+              <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px;">Telefone</td>
+              <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #f5f0e8; font-size: 14px;">${phone || "Não informado"}</td>
             </tr>
-            ${message ? `<tr>
-              <td colspan="2" style="padding-top: 16px;">
-                <p style="color: #888; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px;">Mensagem</p>
-                <p style="color: #f5f0e8; font-size: 15px; line-height: 1.6; margin: 0; background: #111; border: 1px solid #242424; border-radius: 8px; padding: 16px;">${message}</p>
-              </td>
-            </tr>` : ""}
+            <tr>
+              <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px;">Faturamento Anual</td>
+              <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #f5f0e8; font-size: 14px; font-weight: 600;">${revenue}</td>
+            </tr>
           </table>
 
-          <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #242424; text-align: center; color: #555; font-size: 12px;">
-            Bkeeper Ads &mdash; bkeeperads.contato@gmail.com
+          <div style="margin-top: 24px;">
+            <p style="color: #888; font-size: 13px; margin-bottom: 8px;">Mensagem:</p>
+            <div style="background: #111; border: 1px solid #242424; border-radius: 8px; padding: 16px; color: #f5f0e8; font-size: 14px; line-height: 1.6;">${message.replace(/\n/g, "<br/>")}</div>
           </div>
+
+          <div style="margin-top: 32px; text-align: center;">
+            <a href="https://wa.me/5517991215076" style="display: inline-block; padding: 12px 28px; background: #E6BF46; color: #080808; font-weight: 700; border-radius: 8px; text-decoration: none; font-size: 14px;">
+              Responder via WhatsApp
+            </a>
+          </div>
+
+          <p style="margin-top: 24px; text-align: center; font-size: 11px; color: #444;">
+            © ${new Date().getFullYear()} Bkeeper ADS — bkeeperads.contato@gmail.com
+          </p>
         </div>
       `,
     })
 
     if (error) {
       console.error("[Resend error]", error)
-      return NextResponse.json({ error: "Erro ao enviar e-mail." }, { status: 500 })
+      return NextResponse.json(
+        { error: "Não foi possível enviar o e-mail. Tente novamente." },
+        { status: 500 }
+      )
     }
 
-    return NextResponse.json({ success: true, id: data?.id })
+    return NextResponse.json({ success: true })
   } catch (err) {
     console.error("[Contact API error]", err)
-    return NextResponse.json({ error: "Erro interno do servidor." }, { status: 500 })
+    return NextResponse.json(
+      { error: "Erro interno. Tente novamente mais tarde." },
+      { status: 500 }
+    )
   }
 }
