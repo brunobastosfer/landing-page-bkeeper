@@ -6,12 +6,11 @@ import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
 type FormState = "idle" | "loading" | "success" | "error"
 
 const revenueOptions = [
-  "Ainda não tenho faturamento",
-  "Até R$ 10 mil/mês",
-  "R$ 10 mil – R$ 50 mil/mês",
-  "R$ 50 mil – R$ 150 mil/mês",
-  "R$ 150 mil – R$ 500 mil/mês",
-  "Acima de R$ 500 mil/mês",
+  "Menos de R$250.000 / ano",
+  "R$250.000 – R$1.000.000 / ano",
+  "R$1.000.000 – R$2.500.000 / ano",
+  "R$2.500.000 – R$5.000.000 / ano",
+  "Mais de R$5.000.000 / ano",
 ]
 
 export function ContactForm() {
@@ -74,7 +73,7 @@ export function ContactForm() {
             </span>
             <h2 className="text-3xl md:text-5xl font-black text-balance leading-tight mb-6">
               Pronto para{" "}
-              <span className="gold-shimmer">escalar seu negócio?</span>
+              <span className="gold-shimmer">atrair mais clientes para sua empresa?</span>
             </h2>
             <p className="text-[#f5f0e8]/60 text-lg leading-relaxed mb-10">
               Preencha o formulário e um especialista da Bkeeper ADS entrará em
@@ -106,7 +105,7 @@ export function ContactForm() {
                 </div>
                 <div>
                   <p className="font-bold text-foreground">Resultados mensuráveis</p>
-                  <p className="text-sm text-[#f5f0e8]/55">ROI real e métricas claras desde o dia 1</p>
+                  <p className="text-sm text-[#f5f0e8]/55">Acompanhamento claro das métricas e evolução dos resultados com base em dados reais.</p>
                 </div>
               </div>
             </div>

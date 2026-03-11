@@ -4,14 +4,10 @@ import { useEffect, useState } from "react"
 import { ArrowRight, ChevronDown } from "lucide-react"
 
 const phrases = [
-  "Tráfego Pago",
-  "Marketing Digital",
-  "Desenvolvimento Web",
-  "Aplicativos Mobile",
-  "Visão Computacional",
-  "Realidade Aumentada",
-  "Dashboards Inteligentes",
-  "Growth Hacking",
+  "Mais Clientes",
+  "Tráfego Pago Estratégico",
+  "Presença Forte no Google",
+  "Automações",
 ]
 
 export function Hero() {
@@ -85,8 +81,7 @@ export function Hero() {
         </h1>
 
         <p className="text-lg md:text-xl text-[#f5f0e8]/60 max-w-2xl mx-auto leading-relaxed mb-10 text-pretty">
-          Unimos estratégia de marketing, tráfego pago e tecnologia de ponta para
-          transformar sua empresa num negócio digital de alta performance.
+          Ajudamos empresas a gerar clientes todos os dias através de estratégias digitais inteligentes.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -94,7 +89,7 @@ export function Hero() {
             href="#contato"
             className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[#E6BF46] text-[#080808] font-bold text-base hover:bg-[#c9a83a] transition-all duration-200 gold-glow"
           >
-            Quero crescer agora
+            Agendar análise gratuita
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </a>
           <a
@@ -108,9 +103,9 @@ export function Hero() {
         {/* Stats row */}
         <div className="mt-16 grid grid-cols-3 gap-6 max-w-lg mx-auto">
           {[
-            { value: "+150", label: "Projetos entregues" },
-            { value: "+3x", label: "ROI médio dos clientes" },
-            { value: "24h", label: "Suporte dedicado" },
+            { value: "+100.000", label: "Leads gerados para clientes" },
+            { value: "+150", label: "Empresas atendidas" },
+            { value: "+4M", label: "Investidos em anúncios gerenciados" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-2xl md:text-3xl font-black" style={{ color: "#E6BF46" }}>

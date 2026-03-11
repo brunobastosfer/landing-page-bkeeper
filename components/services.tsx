@@ -102,7 +102,7 @@ export function Services() {
             <span className="gold-shimmer">crescimento digital</span>
           </h2>
           <p className="mt-4 text-[#f5f0e8]/55 text-lg max-w-2xl mx-auto text-pretty">
-            Da estratégia à execução — marketing, tecnologia e inovação em um único lugar.
+            Soluções completas para atrair clientes, gerar oportunidades e escalar o crescimento da sua empresa no digital.
           </p>
         </div>
 

@@ -18,8 +18,8 @@ const pillars = [
   },
   {
     icon: Rocket,
-    title: "Inovação",
-    description: "Tecnologias emergentes como AR e visão computacional aplicadas ao crescimento do seu negócio.",
+    title: "Soluções completas",
+    description: "Integramos tráfego pago, páginas de conversão e automações para gerar mais clientes.",
   },
 ]
 
@@ -47,20 +47,22 @@ export function About() {
               seu sucesso
             </h2>
             <p className="text-[#f5f0e8]/60 text-lg leading-relaxed mb-6">
-              A Bkeeper ADS nasceu da convergência entre marketing estratégico e
-              tecnologia avançada. Assim como as abelhas, operamos com precisão,
-              eficiência e propósito — cada ação voltada para gerar resultado real.
+              A Bkeeper Ads nasceu da união entre estratégia digital e geração de oportunidades de negócio.
+            </p>
+            <p className="text-[#f5f0e8]/60 text-lg leading-relaxed mb-6">
+              Inspirados no trabalho das abelhas, acreditamos que crescimento real acontece através de organização, consistência e estratégia.
+            </p>
+            <p className="text-[#f5f0e8]/60 text-lg leading-relaxed mb-6">
+              Assim como a polinização fortalece ecossistemas inteiros, nossas campanhas conectam empresas ao público certo, gerando novos clientes e expandindo sua presença no mercado.
             </p>
             <p className="text-[#f5f0e8]/60 text-lg leading-relaxed mb-10">
-              Nossa equipe multidisciplinar combina especialistas em tráfego pago,
-              desenvolvedores full-stack, cientistas de dados e pesquisadores de IA
-              para entregar soluções completas que transformam empresas.
+              Nosso foco é simples: ajudar empresas a crescer através de estratégias digitais inteligentes e orientadas por dados.
             </p>
             <a
               href="#contato"
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-[#E6BF46] text-[#080808] font-bold text-sm hover:bg-[#c9a83a] transition-colors"
             >
-              Conheça nossa equipe
+              Quero atrair mais clientes
             </a>
           </div>
 
