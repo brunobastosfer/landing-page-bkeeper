@@ -1,298 +1,340 @@
-"use client"
+import { NextRequest, NextResponse } from "next/server"
+import { Resend } from "resend"
 
-import { useState, useRef } from "react"
-import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
+const resend = new Resend(process.env.RESEND_API_KEY)
 
-type FormState = "idle" | "loading" | "success" | "error"
+const OWNER_EMAIL = "atendimento@bkeeperads.com.br"
 
-const revenueOptions = [
-  "Menos de R$250.000 / ano",
-  "R$250.000 – R$1.000.000 / ano",
-  "R$1.000.000 – R$2.500.000 / ano",
-  "R$2.500.000 – R$5.000.000 / ano",
-  "Mais de R$5.000.000 / ano",
-]
+// EMAIL QUE VOCÊ RECEBE (LEAD)
+function buildLeadEmailHtml(
+  name: string,
+  email: string,
+  phone: string | undefined,
+  revenue: string,
+  message: string
+) {
+  const cleanPhone = phone ? phone.replace(/\D/g, "") : ""
 
-export function ContactForm() {
-  const [state, setState] = useState<FormState>("idle")
-  const [errorMsg, setErrorMsg] = useState("")
-  const formStartTime = useRef<number>(Date.now())
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+<body style="margin:0;background:#0b0b0b;font-family:'Nunito',Arial,sans-serif;padding:40px 0">
 
-    setState("loading")
-    setErrorMsg("")
+<table width="100%">
+<tr>
+<td align="center">
 
-    const form = e.currentTarget
+<table width="620" style="background:#111;border-radius:14px;padding:40px">
 
-    const data = {
-      name: (form.elements.namedItem("name") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
-      revenue: (form.elements.namedItem("revenue") as HTMLSelectElement).value,
-      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+<tr>
+<td align="center" style="padding-bottom:30px">
 
-      // honeypot
-      company: (form.elements.namedItem("company") as HTMLInputElement).value,
+<img src="https://bkeeperads.com.br/bee-icon.png" width="48" style="display:block;margin-bottom:10px"/>
 
-      // tempo do formulário (anti bot)
-      formTime: Date.now() - formStartTime.current,
+<div style="font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px">
+Bkeeper
+</div>
+
+<div style="font-size:11px;font-weight:800;color:#E6BF46;letter-spacing:4px;text-transform:uppercase">
+Ads
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td style="padding-bottom:30px">
+
+<div style="font-size:20px;font-weight:700;color:#ffffff;margin-bottom:6px">
+Novo lead recebido
+</div>
+
+<div style="font-size:13px;color:#8a8a8a">
+Lead enviado pelo formulário do site
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+<table width="100%" style="border-collapse:collapse">
+
+<tr>
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#888;font-size:13px;width:140px">
+Nome
+</td>
+
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#fff;font-weight:600">
+${name}
+</td>
+</tr>
+
+<tr>
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#888;font-size:13px">
+E-mail
+</td>
+
+<td style="padding:16px 0;border-bottom:1px solid #242424">
+<a href="mailto:${email}" style="color:#E6BF46;text-decoration:none">
+${email}
+</a>
+</td>
+</tr>
+
+<tr>
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#888;font-size:13px">
+Telefone
+</td>
+
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#fff">
+${phone || "Não informado"}
+</td>
+</tr>
+
+<tr>
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#888;font-size:13px">
+Faturamento
+</td>
+
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#fff;font-weight:600">
+${revenue}
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+
+<tr>
+<td style="padding-top:28px">
+
+<div style="font-size:13px;color:#888;margin-bottom:10px">
+Mensagem
+</div>
+
+<div style="background:#0b0b0b;border:1px solid #242424;border-radius:8px;padding:18px;color:#fff;font-size:14px;line-height:1.7">
+${message.replace(/\n/g, "<br/>")}
+</div>
+
+</td>
+</tr>
+
+${cleanPhone
+      ? `
+<tr>
+<td align="center" style="padding-top:35px">
+
+<a href="https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(name)}"
+style="
+display:inline-block;
+background:#E6BF46;
+color:#000;
+padding:14px 28px;
+border-radius:8px;
+font-weight:700;
+text-decoration:none;
+font-size:14px;
+">
+Conversar com cliente no WhatsApp
+</a>
+
+</td>
+</tr>
+`
+      : ""
     }
 
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      })
+</table>
 
-      const json = await res.json()
+</td>
+</tr>
+</table>
 
-      if (!res.ok) throw new Error(json.error || "Erro ao enviar mensagem")
+</body>
+</html>
+`
+}
 
-      setState("success")
-      form.reset()
+// EMAIL DE CONFIRMAÇÃO PARA CLIENTE
+function buildClientEmailHtml(name: string) {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
 
-      // reinicia timer
-      formStartTime.current = Date.now()
+<body style="margin:0;background:#0b0b0b;font-family:'Nunito',Arial,sans-serif;padding:40px 0">
 
-    } catch (err) {
-      setState("error")
+<table width="100%">
+<tr>
+<td align="center">
 
-      setErrorMsg(
-        err instanceof Error
-          ? err.message
-          : "Erro inesperado. Tente novamente."
+<table width="600" style="background:#111;border-radius:14px;padding:40px">
+
+<tr>
+<td align="center" style="padding-bottom:30px">
+
+<img src="https://bkeeperads.com.br/bee-icon.png" width="48" style="display:block;margin-bottom:10px"/>
+
+<div style="font-size:22px;font-weight:900;color:#fff">
+Bkeeper
+</div>
+
+<div style="font-size:11px;font-weight:800;color:#E6BF46;letter-spacing:4px;text-transform:uppercase">
+Ads
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+<div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:14px">
+Olá ${name} 👋
+</div>
+
+<div style="color:#b8b8b8;line-height:1.7;font-size:15px">
+Recebemos sua mensagem e nossa equipe irá analisar seu pedido.
+</div>
+
+<div style="color:#b8b8b8;line-height:1.7;font-size:15px;margin-top:10px">
+Em breve entraremos em contato com você.
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td style="padding-top:32px">
+
+<div style="font-size:12px;color:#6a6a6a;text-align:center">
+© ${new Date().getFullYear()} Bkeeper ADS
+</div>
+
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+`
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json(
+        { error: "Configuração de e-mail ausente." },
+        { status: 500 }
       )
     }
+
+    const body = await req.json()
+
+    const {
+      name,
+      email,
+      phone,
+      revenue,
+      message,
+      company,
+      formTime
+    } = body
+
+    // Honeypot
+    if (company) {
+      return NextResponse.json({ success: true })
+    }
+
+    // Delay anti-bot
+    if (formTime && formTime < 3000) {
+      return NextResponse.json({ success: true })
+    }
+
+    if (!name?.trim() || !email?.trim() || !revenue?.trim() || !message?.trim()) {
+      return NextResponse.json(
+        { error: "Preencha todos os campos obrigatórios." },
+        { status: 400 }
+      )
+    }
+
+    if (message.length < 10 || name.length < 3) {
+      return NextResponse.json({ success: true })
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: "Informe um e-mail válido." },
+        { status: 400 }
+      )
+    }
+
+    // EMAIL PARA VOCÊ
+    const leadEmail = await resend.emails.send({
+      from: "Bkeeper ADS <contato@bkeeperads.com.br>",
+      to: [OWNER_EMAIL],
+      replyTo: email,
+      subject: `Novo lead do site - ${name}`,
+      html: buildLeadEmailHtml(name, email, phone, revenue, message),
+      text: `
+Novo lead recebido
+
+Nome: ${name}
+Email: ${email}
+Telefone: ${phone || "Não informado"}
+Faturamento: ${revenue}
+
+Mensagem:
+${message}
+`
+    })
+
+    if (leadEmail.error) {
+      console.error("Erro ao enviar lead:", leadEmail.error)
+      throw new Error("Erro ao enviar lead")
+    }
+
+    // EMAIL PARA CLIENTE
+    await resend.emails.send({
+      from: "Bkeeper ADS <contato@bkeeperads.com.br>",
+      to: [email],
+      subject: "Recebemos sua mensagem - Bkeeper ADS",
+      html: buildClientEmailHtml(name),
+      text: `
+Olá ${name},
+
+Recebemos sua mensagem e em breve nossa equipe irá responder.
+
+Bkeeper ADS
+`
+    })
+
+    return NextResponse.json({ success: true })
+
+  } catch (err) {
+    console.error("Erro no formulário:", err)
+
+    return NextResponse.json(
+      { error: "Erro ao enviar mensagem. Tente novamente." },
+      { status: 500 }
+    )
   }
-
-  const inputClass =
-    "w-full px-4 py-3 rounded-xl bg-[#1a1a1a] border border-[#2e2e2e] text-foreground text-sm placeholder-[#555] focus:outline-none focus:border-[#E6BF46] focus:ring-1 focus:ring-[#E6BF46]/30 transition-all"
-
-  const labelClass = "block text-sm font-semibold text-[#f5f0e8]/80 mb-1.5"
-
-  return (
-    <section id="contato" className="py-28 px-6 relative overflow-hidden">
-      <div
-        className="absolute left-0 bottom-0 w-[500px] h-[500px] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle at 0% 100%, rgba(230,191,70,0.05) 0%, transparent 60%)",
-        }}
-      />
-
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* LEFT */}
-          <div>
-            <span className="inline-block px-4 py-1.5 rounded-full border border-[#E6BF46]/30 bg-[#E6BF46]/5 text-[#E6BF46] text-sm font-semibold mb-6">
-              Entre em contato
-            </span>
-
-            <h2 className="text-3xl md:text-5xl font-black text-balance leading-tight mb-6">
-              Pronto para{" "}
-              <span className="gold-shimmer">
-                atrair mais clientes para sua empresa?
-              </span>
-            </h2>
-
-            <p className="text-[#f5f0e8]/60 text-lg leading-relaxed mb-10">
-              Preencha o formulário e um especialista da Bkeeper ADS entrará em
-              contato para entender seus objetivos e apresentar a melhor solução.
-            </p>
-
-            <div className="flex flex-col gap-5">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-[#E6BF46]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-[#E6BF46] font-bold text-sm">01</span>
-                </div>
-                <div>
-                  <p className="font-bold text-foreground">Análise gratuita</p>
-                  <p className="text-sm text-[#f5f0e8]/55">
-                    Entendemos seu negócio sem custo algum
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-[#E6BF46]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-[#E6BF46] font-bold text-sm">02</span>
-                </div>
-                <div>
-                  <p className="font-bold text-foreground">
-                    Estratégia personalizada
-                  </p>
-                  <p className="text-sm text-[#f5f0e8]/55">
-                    Proposta feita especialmente para você
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-[#E6BF46]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-[#E6BF46] font-bold text-sm">03</span>
-                </div>
-                <div>
-                  <p className="font-bold text-foreground">
-                    Resultados mensuráveis
-                  </p>
-                  <p className="text-sm text-[#f5f0e8]/55">
-                    Acompanhamento claro das métricas e evolução dos resultados
-                    com base em dados reais.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* FORM */}
-          <div className="rounded-2xl border border-[#242424] bg-[#111111] p-8">
-            {state === "success" ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-                <CheckCircle size={56} className="text-[#E6BF46]" />
-                <h3 className="text-xl font-bold text-foreground">
-                  Mensagem enviada!
-                </h3>
-                <p className="text-[#f5f0e8]/60 max-w-sm">
-                  Obrigado pelo contato. Nossa equipe retornará em breve.
-                </p>
-
-                <button
-                  onClick={() => setState("idle")}
-                  className="mt-4 px-6 py-2.5 rounded-xl border border-[#E6BF46]/40 text-[#E6BF46] font-semibold text-sm hover:bg-[#E6BF46]/10 transition-colors"
-                >
-                  Enviar nova mensagem
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
-
-                {/* Honeypot anti-bot */}
-                <input
-                  type="text"
-                  name="company"
-                  autoComplete="off"
-                  tabIndex={-1}
-                  className="hidden"
-                />
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label htmlFor="name" className={labelClass}>
-                      Nome completo <span className="text-[#E6BF46]">*</span>
-                    </label>
-
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      placeholder="João Silva"
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className={labelClass}>
-                      E-mail <span className="text-[#E6BF46]">*</span>
-                    </label>
-
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      placeholder="joao@empresa.com"
-                      className={inputClass}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className={labelClass}>
-                    Telefone / WhatsApp
-                  </label>
-
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    placeholder="(17) 99999-9999"
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="revenue" className={labelClass}>
-                    Faturamento anual da empresa{" "}
-                    <span className="text-[#E6BF46]">*</span>
-                  </label>
-
-                  <select
-                    id="revenue"
-                    name="revenue"
-                    required
-                    defaultValue=""
-                    className={`${inputClass} appearance-none cursor-pointer`}
-                  >
-                    <option value="" disabled>
-                      Selecione uma faixa
-                    </option>
-
-                    {revenueOptions.map((opt) => (
-                      <option key={opt} value={opt} className="bg-[#1a1a1a]">
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className={labelClass}>
-                    Mensagem <span className="text-[#E6BF46]">*</span>
-                  </label>
-
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={4}
-                    placeholder="Conte-nos sobre seu projeto ou desafio atual..."
-                    className={`${inputClass} resize-none`}
-                  />
-                </div>
-
-                {state === "error" && (
-                  <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-                    <AlertCircle size={16} className="flex-shrink-0" />
-                    {errorMsg}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={state === "loading"}
-                  className="flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-[#E6BF46] text-[#080808] font-bold text-base hover:bg-[#c9a83a] disabled:opacity-60 disabled:cursor-not-allowed transition-all gold-glow"
-                >
-                  {state === "loading" ? (
-                    <>
-                      <Loader2 size={18} className="animate-spin" />
-                      Enviando...
-                    </>
-                  ) : (
-                    <>
-                      <Send size={18} />
-                      Enviar mensagem
-                    </>
-                  )}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
 }
