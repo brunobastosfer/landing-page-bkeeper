@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
 
 type FormState = "idle" | "loading" | "success" | "error"
@@ -16,19 +16,28 @@ const revenueOptions = [
 export function ContactForm() {
   const [state, setState] = useState<FormState>("idle")
   const [errorMsg, setErrorMsg] = useState("")
+  const formStartTime = useRef<number>(Date.now())
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+
     setState("loading")
     setErrorMsg("")
 
     const form = e.currentTarget
+
     const data = {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
       email: (form.elements.namedItem("email") as HTMLInputElement).value,
       phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
       revenue: (form.elements.namedItem("revenue") as HTMLSelectElement).value,
       message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+
+      // honeypot
+      company: (form.elements.namedItem("company") as HTMLInputElement).value,
+
+      // tempo do formulário (anti bot)
+      formTime: Date.now() - formStartTime.current,
     }
 
     try {
@@ -39,12 +48,23 @@ export function ContactForm() {
       })
 
       const json = await res.json()
+
       if (!res.ok) throw new Error(json.error || "Erro ao enviar mensagem")
+
       setState("success")
       form.reset()
+
+      // reinicia timer
+      formStartTime.current = Date.now()
+
     } catch (err) {
       setState("error")
-      setErrorMsg(err instanceof Error ? err.message : "Erro inesperado. Tente novamente.")
+
+      setErrorMsg(
+        err instanceof Error
+          ? err.message
+          : "Erro inesperado. Tente novamente."
+      )
     }
   }
 
@@ -55,7 +75,6 @@ export function ContactForm() {
 
   return (
     <section id="contato" className="py-28 px-6 relative overflow-hidden">
-      {/* Background */}
       <div
         className="absolute left-0 bottom-0 w-[500px] h-[500px] pointer-events-none"
         style={{
@@ -66,15 +85,19 @@ export function ContactForm() {
 
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* Left — info */}
+          {/* LEFT */}
           <div>
             <span className="inline-block px-4 py-1.5 rounded-full border border-[#E6BF46]/30 bg-[#E6BF46]/5 text-[#E6BF46] text-sm font-semibold mb-6">
               Entre em contato
             </span>
+
             <h2 className="text-3xl md:text-5xl font-black text-balance leading-tight mb-6">
               Pronto para{" "}
-              <span className="gold-shimmer">atrair mais clientes para sua empresa?</span>
+              <span className="gold-shimmer">
+                atrair mais clientes para sua empresa?
+              </span>
             </h2>
+
             <p className="text-[#f5f0e8]/60 text-lg leading-relaxed mb-10">
               Preencha o formulário e um especialista da Bkeeper ADS entrará em
               contato para entender seus objetivos e apresentar a melhor solução.
@@ -87,39 +110,55 @@ export function ContactForm() {
                 </div>
                 <div>
                   <p className="font-bold text-foreground">Análise gratuita</p>
-                  <p className="text-sm text-[#f5f0e8]/55">Entendemos seu negócio sem custo algum</p>
+                  <p className="text-sm text-[#f5f0e8]/55">
+                    Entendemos seu negócio sem custo algum
+                  </p>
                 </div>
               </div>
+
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-[#E6BF46]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-[#E6BF46] font-bold text-sm">02</span>
                 </div>
                 <div>
-                  <p className="font-bold text-foreground">Estratégia personalizada</p>
-                  <p className="text-sm text-[#f5f0e8]/55">Proposta feita especialmente para você</p>
+                  <p className="font-bold text-foreground">
+                    Estratégia personalizada
+                  </p>
+                  <p className="text-sm text-[#f5f0e8]/55">
+                    Proposta feita especialmente para você
+                  </p>
                 </div>
               </div>
+
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-[#E6BF46]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-[#E6BF46] font-bold text-sm">03</span>
                 </div>
                 <div>
-                  <p className="font-bold text-foreground">Resultados mensuráveis</p>
-                  <p className="text-sm text-[#f5f0e8]/55">Acompanhamento claro das métricas e evolução dos resultados com base em dados reais.</p>
+                  <p className="font-bold text-foreground">
+                    Resultados mensuráveis
+                  </p>
+                  <p className="text-sm text-[#f5f0e8]/55">
+                    Acompanhamento claro das métricas e evolução dos resultados
+                    com base em dados reais.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right — form */}
+          {/* FORM */}
           <div className="rounded-2xl border border-[#242424] bg-[#111111] p-8">
             {state === "success" ? (
               <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
                 <CheckCircle size={56} className="text-[#E6BF46]" />
-                <h3 className="text-xl font-bold text-foreground">Mensagem enviada!</h3>
+                <h3 className="text-xl font-bold text-foreground">
+                  Mensagem enviada!
+                </h3>
                 <p className="text-[#f5f0e8]/60 max-w-sm">
                   Obrigado pelo contato. Nossa equipe retornará em breve.
                 </p>
+
                 <button
                   onClick={() => setState("idle")}
                   className="mt-4 px-6 py-2.5 rounded-xl border border-[#E6BF46]/40 text-[#E6BF46] font-semibold text-sm hover:bg-[#E6BF46]/10 transition-colors"
@@ -129,11 +168,22 @@ export function ContactForm() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+
+                {/* Honeypot anti-bot */}
+                <input
+                  type="text"
+                  name="company"
+                  autoComplete="off"
+                  tabIndex={-1}
+                  className="hidden"
+                />
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="name" className={labelClass}>
                       Nome completo <span className="text-[#E6BF46]">*</span>
                     </label>
+
                     <input
                       id="name"
                       name="name"
@@ -143,10 +193,12 @@ export function ContactForm() {
                       className={inputClass}
                     />
                   </div>
+
                   <div>
                     <label htmlFor="email" className={labelClass}>
                       E-mail <span className="text-[#E6BF46]">*</span>
                     </label>
+
                     <input
                       id="email"
                       name="email"
@@ -162,6 +214,7 @@ export function ContactForm() {
                   <label htmlFor="phone" className={labelClass}>
                     Telefone / WhatsApp
                   </label>
+
                   <input
                     id="phone"
                     name="phone"
@@ -173,8 +226,10 @@ export function ContactForm() {
 
                 <div>
                   <label htmlFor="revenue" className={labelClass}>
-                    Faturamento anual da empresa <span className="text-[#E6BF46]">*</span>
+                    Faturamento anual da empresa{" "}
+                    <span className="text-[#E6BF46]">*</span>
                   </label>
+
                   <select
                     id="revenue"
                     name="revenue"
@@ -185,6 +240,7 @@ export function ContactForm() {
                     <option value="" disabled>
                       Selecione uma faixa
                     </option>
+
                     {revenueOptions.map((opt) => (
                       <option key={opt} value={opt} className="bg-[#1a1a1a]">
                         {opt}
@@ -197,6 +253,7 @@ export function ContactForm() {
                   <label htmlFor="message" className={labelClass}>
                     Mensagem <span className="text-[#E6BF46]">*</span>
                   </label>
+
                   <textarea
                     id="message"
                     name="message"
