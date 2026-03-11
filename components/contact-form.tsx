@@ -18,6 +18,29 @@ export function ContactForm() {
   const [errorMsg, setErrorMsg] = useState("")
   const formStartTime = useRef<number>(Date.now())
 
+  const businessAreas = [
+    "Advocacia",
+    "Arquitetura",
+    "Clínica / Saúde",
+    "Dentista",
+    "Estética / Beleza",
+    "Academia / Fitness",
+    "Imobiliária",
+    "Construção / Engenharia",
+    "Restaurante / Alimentação",
+    "Hotel / Turismo",
+    "E-commerce / Loja Virtual",
+    "Loja física / Varejo",
+    "Educação / Cursos",
+    "Tecnologia / Software",
+    "Indústria",
+    "Consultoria / Serviços",
+    "Marketing / Publicidade",
+    "Automotivo",
+    "Financeiro",
+    "Outra"
+  ]
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
@@ -222,6 +245,31 @@ export function ContactForm() {
                     placeholder="(17) 99999-9999"
                     className={inputClass}
                   />
+                </div>
+
+                <div>
+                  <label htmlFor="area" className={labelClass}>
+                    Área de atuação da empresa{" "}
+                    <span className="text-[#E6BF46]">*</span>
+                  </label>
+
+                  <select
+                    id="area"
+                    name="area"
+                    required
+                    defaultValue=""
+                    className={`${inputClass} appearance-none cursor-pointer`}
+                  >
+                    <option value="" disabled>
+                      Selecione uma área
+                    </option>
+
+                    {businessAreas.map((area) => (
+                      <option key={area} value={area} className="bg-[#1a1a1a]">
+                        {area}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
