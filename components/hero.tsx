@@ -84,6 +84,7 @@ export function Hero() {
           Ajudamos empresas a gerar clientes todos os dias através de estratégias digitais inteligentes.
         </p>
 
+
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
             href="#contato"

@@ -1,13 +1,77 @@
 import {
-  Code2,
-  LayoutDashboard,
-  Users,
   TrendingUp,
-  Eye,
-  Glasses,
+  MapPin,
+  LayoutTemplate,
+  BarChart3,
+  Zap,
+  Code2,
 } from "lucide-react"
 
 const services = [
+  {
+    icon: TrendingUp,
+    title: "Tráfego Pago (Google & Meta Ads)",
+    description:
+      "Estruturamos campanhas estratégicas para gerar leads qualificados e novos clientes todos os dias.",
+    items: [
+      "Google Ads (Pesquisa e Display)",
+      "Meta Ads (Instagram e Facebook)",
+      "Estratégia de Funil",
+      "Otimização diária de campanhas",
+      "Escala de resultados",
+    ],
+  },
+  {
+    icon: MapPin,
+    title: "Google Meu Negócio & SEO Local",
+    description:
+      "Posicionamos sua empresa nas primeiras posições do Google para que clientes da sua região encontrem você primeiro.",
+    items: [
+      "Otimização completa do perfil",
+      "Estratégia de avaliações",
+      "SEO Local",
+      "Postagens estratégicas",
+      "Gestão e monitoramento",
+    ],
+  },
+  {
+    icon: LayoutTemplate,
+    title: "Estrutura de Conversão (Landing Pages)",
+    description:
+      "Criamos páginas estratégicas para transformar visitantes em leads e clientes.",
+    items: [
+      "Landing pages de alta conversão",
+      "Estrutura para campanhas de tráfego",
+      "Integração com WhatsApp",
+      "Otimização para conversão",
+      "Testes de melhoria",
+    ],
+  },
+  {
+    icon: BarChart3,
+    title: "Estratégia de Crescimento Digital",
+    description:
+      "Analisamos o seu negócio e estruturamos uma estratégia completa para gerar crescimento previsível.",
+    items: [
+      "Diagnóstico de marketing",
+      "Planejamento de campanhas",
+      "Análise de métricas",
+      "Otimização de funil",
+      "Escala de resultados",
+    ],
+  },
+  {
+    icon: Zap,
+    title: "Automação e Integrações",
+    description:
+      "Automatizamos processos de captação e atendimento para que nenhum lead seja perdido.",
+    items: [
+      "Integração com CRM",
+      "Automação de WhatsApp",
+      "Gestão de leads",
+      "Monitoramento de resultados",
+    ],
+  },
   {
     icon: Code2,
     title: "Desenvolvimento de Software",
@@ -19,71 +83,6 @@ const services = [
       "Aplicativos Mobile (iOS & Android)",
       "Sistemas Web Personalizados",
       "APIs e Integrações",
-    ],
-  },
-  {
-    icon: LayoutDashboard,
-    title: "Monitoramento de Dados",
-    description:
-      "Dashboards inteligentes e monitoramento em tempo real para que você tenha total controle sobre os dados do seu negócio.",
-    items: [
-      "Dashboards em Tempo Real",
-      "Analytics Avançado",
-      "Alertas Automatizados",
-      "Relatórios Personalizados",
-      "Integração com BI",
-    ],
-  },
-  {
-    icon: Users,
-    title: "Equipe de Tecnologia",
-    description:
-      "Fornecemos profissionais qualificados para integrar sua equipe de tecnologia, com expertise em diversas stacks e metodologias.",
-    items: [
-      "Desenvolvedores Full-Stack",
-      "Designers UI/UX",
-      "DevOps & Cloud",
-      "Tech Leads Experientes",
-      "Gestão de Projetos",
-    ],
-  },
-  {
-    icon: TrendingUp,
-    title: "Tráfego Pago & Marketing",
-    description:
-      "Estratégias de marketing digital e tráfego pago para impulsionar a visibilidade e o crescimento da sua empresa no mercado.",
-    items: [
-      "Google Ads & Meta Ads",
-      "SEO & Performance",
-      "Estratégia de Conteúdo",
-      "Growth Hacking",
-      "Análise de Métricas",
-    ],
-  },
-  {
-    icon: Eye,
-    title: "Visão Computacional",
-    description:
-      "Soluções avançadas de visão computacional para automação, análise de imagens e reconhecimento de padrões com IA.",
-    items: [
-      "Reconhecimento de Objetos",
-      "Análise de Imagens com IA",
-      "Detecção em Tempo Real",
-      "Automação Visual",
-      "Modelos de Deep Learning",
-    ],
-  },
-  {
-    icon: Glasses,
-    title: "Realidade Aumentada",
-    description:
-      "Experiências imersivas de realidade aumentada para varejo, treinamento, marketing e aplicações industriais.",
-    items: [
-      "AR para E-commerce",
-      "Treinamentos Imersivos",
-      "Campanhas de Marketing AR",
-      "Visualização de Produtos 3D",
-      "Aplicações Industriais",
     ],
   },
 ]
@@ -102,7 +101,7 @@ export function Services() {
             <span className="gold-shimmer">crescimento digital</span>
           </h2>
           <p className="mt-4 text-[#f5f0e8]/55 text-lg max-w-2xl mx-auto text-pretty">
-            Soluções completas para atrair clientes, gerar oportunidades e escalar o crescimento da sua empresa no digital.
+            Da estratégia à execução — Soluções completas para atrair clientes, gerar oportunidades e escalar o crescimento da sua empresa no digital.
           </p>
         </div>
 

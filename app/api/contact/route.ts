@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const { error } = await resend.emails.send({
       from: "Bkeeper ADS <onboarding@resend.dev>",
       to: ["bkeeperads.contato@gmail.com"],
-      replyTo: email,
+      replyTo: [email],
       subject: `[Bkeeper ADS] Nova mensagem de ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #080808; color: #f5f0e8; padding: 32px; border-radius: 12px;">
@@ -64,18 +64,19 @@ export async function POST(req: NextRequest) {
     })
 
     if (error) {
-      console.error("[Resend error]", error)
+      console.error("[Resend error]", JSON.stringify(error))
       return NextResponse.json(
-        { error: "Não foi possível enviar o e-mail. Tente novamente." },
+        { error: "Não foi possível enviar o e-mail. Verifique a chave RESEND_API_KEY e tente novamente." },
         { status: 500 }
       )
     }
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error("[Contact API error]", err)
+    const message = err instanceof Error ? err.message : String(err)
+    console.error("[Contact API error]", message)
     return NextResponse.json(
-      { error: "Erro interno. Tente novamente mais tarde." },
+      { error: `Erro interno: ${message}` },
       { status: 500 }
     )
   }

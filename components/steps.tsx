@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import { ArrowRight } from "lucide-react"
 
 const steps = [
@@ -6,113 +9,251 @@ const steps = [
     title: "Imersão no Negócio",
     description:
       "Entendemos profundamente seus desafios, objetivos e visão. Mergulhamos na cultura da sua empresa para garantir que a solução seja perfeita para você.",
+    color: "#E6BF46",
   },
   {
     number: "02",
     title: "Diagnóstico e Estratégia",
     description:
       "Realizamos análise técnica e estratégica completa, definindo a melhor arquitetura e tecnologias para gerar máximo retorno no seu investimento.",
+    color: "#E6BF46",
   },
   {
     number: "03",
     title: "Planejamento Detalhado",
     description:
       "Estruturamos escopo, cronograma e estimativas claras. Você sabe exatamente o que esperar, quando esperar e qual será o investimento.",
+    color: "#E6BF46",
   },
   {
     number: "04",
     title: "Desenvolvimento Ágil",
     description:
       "Construímos com metodologias ágeis, entregando funcionalidades iterativamente. Você valida continuamente e pode ajustar conforme necessário.",
+    color: "#E6BF46",
   },
   {
     number: "05",
     title: "Testes e Qualidade",
     description:
       "Garantimos estabilidade, segurança e performance através de testes rigorosos. Sua solução chegará ao mercado confiável e otimizada.",
+    color: "#E6BF46",
   },
   {
     number: "06",
     title: "Implantação Segura",
     description:
       "Realizamos lançamento em produção com estratégia zero-downtime. O sistema está pronto para operação desde o primeiro dia.",
+    color: "#E6BF46",
   },
   {
     number: "07",
     title: "Crescimento Acelerado",
     description:
       "Impulsionamos seus resultados com marketing digital e tráfego pago. Transformamos visitas em leads, leads em clientes e clientes em receita.",
+    color: "#E6BF46",
   },
   {
     number: "08",
     title: "Evolução Contínua",
     description:
       "Monitoramos performance em tempo real e evoluímos constantemente. Seu sistema cresce junto com o seu negócio, sempre otimizado.",
+    color: "#E6BF46",
   },
 ]
 
 export function Steps() {
+  const [active, setActive] = useState<number | null>(null)
+
   return (
-    <section id="passos" className="py-28 px-6 bg-[#0a0a0a]">
-      <div className="max-w-7xl mx-auto">
+    <section id="passos" className="py-28 px-6 bg-[#0a0a0a] overflow-hidden">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-16">
           <span className="inline-block px-4 py-1.5 rounded-full border border-[#E6BF46]/30 bg-[#E6BF46]/5 text-[#E6BF46] text-sm font-semibold mb-4">
             Nossa metodologia
           </span>
           <h2 className="text-3xl md:text-5xl font-black text-balance">
-            8 passos para o{" "}
-            <span className="gold-shimmer">sucesso do seu projeto</span>
+            Como transformamos sua{" "}
+            <span className="gold-shimmer">ideia em resultado</span>
           </h2>
-          <p className="mt-4 text-[#f5f0e8]/55 text-lg max-w-2xl mx-auto text-pretty">
-            Processo estruturado e comprovado que transforma sua visão em realidade.
+          <p className="mt-4 text-[#f5f0e8]/55 text-base max-w-xl mx-auto text-pretty">
+            Clique em cada etapa para entender o que acontece no processo.
           </p>
         </div>
 
-        {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {steps.map((step, index) => (
-            <div key={index} className="relative">
-              {/* Card */}
-              <div className="flex flex-col h-full p-6 rounded-xl border border-[#242424] bg-[#111111] hover:border-[#E6BF46]/40 hover:bg-[#141414] transition-all duration-300 group">
-                {/* Número grande */}
-                <div className="text-6xl font-black mb-4" style={{ color: "#E6BF46" }}>
-                  {step.number}
-                </div>
+        {/* Desktop: mind-map radial layout */}
+        <div className="hidden md:block">
+          {/* Central node */}
+          <div className="relative flex items-center justify-center" style={{ height: 700 }}>
+            {/* SVG connector lines */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              viewBox="0 0 900 700"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              {steps.map((_, i) => {
+                // Positions for 8 nodes in a circle
+                const angle = (i / steps.length) * 2 * Math.PI - Math.PI / 2
+                const rx = 290
+                const ry = 260
+                const cx = 450
+                const cy = 350
+                const x = cx + rx * Math.cos(angle)
+                const y = cy + ry * Math.sin(angle)
+                const isActive = active === i
+                return (
+                  <line
+                    key={i}
+                    x1={cx}
+                    y1={cy}
+                    x2={x}
+                    y2={y}
+                    stroke={isActive ? "#E6BF46" : "#2a2a2a"}
+                    strokeWidth={isActive ? 2 : 1}
+                    strokeDasharray={isActive ? "none" : "4 4"}
+                    style={{ transition: "stroke 0.3s, stroke-width 0.3s" }}
+                  />
+                )
+              })}
+            </svg>
 
-                {/* Título */}
-                <h3 className="text-lg font-bold text-foreground mb-3">{step.title}</h3>
-
-                {/* Descrição */}
-                <p className="text-[#f5f0e8]/55 text-sm leading-relaxed flex-grow">
-                  {step.description}
-                </p>
-
-                {/* Connector arrow */}
-                {index < steps.length - 1 && (
-                  <div className="absolute -right-4 top-1/2 -translate-y-1/2 hidden lg:block">
-                    <ArrowRight size={20} className="text-[#E6BF46]/30" />
-                  </div>
-                )}
+            {/* Center hub */}
+            <div className="absolute z-10 flex items-center justify-center rounded-full border-2 border-[#E6BF46] bg-[#080808]"
+              style={{ width: 120, height: 120, left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
+              <div className="text-center">
+                <div className="text-[#E6BF46] font-black text-xl leading-none">8</div>
+                <div className="text-[#f5f0e8]/60 text-[10px] font-semibold tracking-widest uppercase mt-1">Passos</div>
               </div>
-
-              {/* Mobile connector */}
-              {index < steps.length - 1 && (
-                <div className="h-6 lg:hidden flex items-center justify-center mt-4">
-                  <div className="w-0.5 h-6 bg-gradient-to-b from-[#E6BF46] to-transparent" />
-                </div>
-              )}
             </div>
-          ))}
+
+            {/* Step nodes */}
+            {steps.map((step, i) => {
+              const angle = (i / steps.length) * 2 * Math.PI - Math.PI / 2
+              const rx = 290
+              const ry = 260
+              const cx = 50
+              const cy = 50
+              const x = cx + rx * Math.cos(angle)
+              const y = cy + ry * Math.sin(angle)
+              const isActive = active === i
+
+              return (
+                <button
+                  key={i}
+                  onClick={() => setActive(isActive ? null : i)}
+                  className="absolute z-20 group"
+                  style={{
+                    left: `calc(50% + ${rx * Math.cos(angle)}px)`,
+                    top: `calc(50% + ${ry * Math.sin(angle)}px)`,
+                    transform: "translate(-50%, -50%)",
+                  }}
+                  aria-label={step.title}
+                >
+                  <div
+                    className="flex flex-col items-center justify-center rounded-2xl border transition-all duration-300 text-center"
+                    style={{
+                      width: 130,
+                      height: 100,
+                      backgroundColor: isActive ? "#E6BF46" : "#111111",
+                      borderColor: isActive ? "#E6BF46" : "#2a2a2a",
+                      boxShadow: isActive ? "0 0 24px rgba(230,191,70,0.35)" : "none",
+                    }}
+                  >
+                    <span
+                      className="font-black text-2xl leading-none"
+                      style={{ color: isActive ? "#080808" : "#E6BF46" }}
+                    >
+                      {step.number}
+                    </span>
+                    <span
+                      className="text-[11px] font-bold leading-tight mt-1.5 px-2"
+                      style={{ color: isActive ? "#080808" : "#f5f0e8" }}
+                    >
+                      {step.title}
+                    </span>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Description panel */}
+          <div
+            className="mx-auto max-w-xl rounded-2xl border border-[#E6BF46]/30 bg-[#111111] px-8 py-6 text-center transition-all duration-300"
+            style={{
+              opacity: active !== null ? 1 : 0,
+              transform: active !== null ? "translateY(0)" : "translateY(8px)",
+              pointerEvents: active !== null ? "auto" : "none",
+              minHeight: 100,
+            }}
+          >
+            {active !== null && (
+              <>
+                <p className="text-[#E6BF46] font-black text-lg mb-2">{steps[active].title}</p>
+                <p className="text-[#f5f0e8]/70 text-sm leading-relaxed">{steps[active].description}</p>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile: vertical stepper */}
+        <div className="flex flex-col gap-0 md:hidden">
+          {steps.map((step, i) => {
+            const isActive = active === i
+            return (
+              <div key={i} className="flex gap-4">
+                {/* Left timeline */}
+                <div className="flex flex-col items-center">
+                  <button
+                    onClick={() => setActive(isActive ? null : i)}
+                    className="w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0 font-black text-sm transition-all duration-300"
+                    style={{
+                      backgroundColor: isActive ? "#E6BF46" : "#111111",
+                      borderColor: isActive ? "#E6BF46" : "#2a2a2a",
+                      color: isActive ? "#080808" : "#E6BF46",
+                      boxShadow: isActive ? "0 0 16px rgba(230,191,70,0.4)" : "none",
+                    }}
+                  >
+                    {step.number}
+                  </button>
+                  {i < steps.length - 1 && (
+                    <div
+                      className="w-px flex-1 my-1 transition-colors duration-300"
+                      style={{ backgroundColor: isActive ? "#E6BF46" : "#242424", minHeight: 24 }}
+                    />
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="pb-6 flex-1 pt-1.5">
+                  <button
+                    onClick={() => setActive(isActive ? null : i)}
+                    className="w-full text-left"
+                  >
+                    <h3 className="font-bold text-foreground text-base mb-1">{step.title}</h3>
+                  </button>
+                  <div
+                    className="overflow-hidden transition-all duration-300"
+                    style={{ maxHeight: isActive ? 200 : 0, opacity: isActive ? 1 : 0 }}
+                  >
+                    <p className="text-[#f5f0e8]/60 text-sm leading-relaxed pr-2">
+                      {step.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
 
         {/* CTA */}
-        <div className="mt-16 text-center">
+        <div className="mt-14 text-center">
           <a
             href="#contato"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[#E6BF46] text-[#080808] font-bold text-base hover:bg-[#c9a83a] transition-all duration-200 gold-glow group"
           >
-            Começar meu projeto agora
+            Começar agora
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
