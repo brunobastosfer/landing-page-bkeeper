@@ -17,7 +17,7 @@ export function Hero() {
   const [charIndex, setCharIndex] = useState(0)
 
   useEffect(() => {
-    const current = phrases[phraseIndex]
+    const current = phrases[phraseIndex % phrases.length] ?? ""
     let timeout: ReturnType<typeof setTimeout>
 
     if (!isDeleting && charIndex <= current.length) {
