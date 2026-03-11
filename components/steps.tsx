@@ -6,60 +6,39 @@ import { ArrowRight } from "lucide-react"
 const steps = [
   {
     number: "01",
-    title: "Imersão no Negócio",
+    title: "Diagnóstico Profundo",
     description:
-      "Entendemos profundamente seus desafios, objetivos e visão. Mergulhamos na cultura da sua empresa para garantir que a solução seja perfeita para você.",
+      "Entendemos sua empresa, seu mercado e seu público para identificar as melhores oportunidades de crescimento digital.",
     color: "#E6BF46",
   },
   {
     number: "02",
-    title: "Diagnóstico e Estratégia",
+    title: "Posicionamento Estratégico",
     description:
-      "Realizamos análise técnica e estratégica completa, definindo a melhor arquitetura e tecnologias para gerar máximo retorno no seu investimento.",
+      "Definimos uma estratégia personalizada de marketing digital para atrair clientes qualificados e gerar oportunidades reais de negócio.",
     color: "#E6BF46",
   },
   {
     number: "03",
-    title: "Planejamento Detalhado",
+    title: "Gestão Inteligente",
     description:
-      "Estruturamos escopo, cronograma e estimativas claras. Você sabe exatamente o que esperar, quando esperar e qual será o investimento.",
+      "Configuramos campanhas, páginas e sistemas necessários para iniciar a captação de leads e clientes para sua empresa.",
     color: "#E6BF46",
   },
   {
     number: "04",
-    title: "Desenvolvimento Ágil",
+    title: "Otimização Contínua",
     description:
-      "Construímos com metodologias ágeis, entregando funcionalidades iterativamente. Você valida continuamente e pode ajustar conforme necessário.",
+      "Monitoramos dados, analisamos resultados e ajustamos campanhas constantemente para melhorar o desempenho e reduzir custos.",
     color: "#E6BF46",
   },
   {
     number: "05",
-    title: "Testes e Qualidade",
+    title: "Relatórios Transparentes",
     description:
-      "Garantimos estabilidade, segurança e performance através de testes rigorosos. Sua solução chegará ao mercado confiável e otimizada.",
+      "Identificamos as estratégias que geram mais retorno e ampliamos os investimentos para escalar o crescimento do seu negócio.",
     color: "#E6BF46",
-  },
-  {
-    number: "06",
-    title: "Implantação Segura",
-    description:
-      "Realizamos lançamento em produção com estratégia zero-downtime. O sistema está pronto para operação desde o primeiro dia.",
-    color: "#E6BF46",
-  },
-  {
-    number: "07",
-    title: "Crescimento Acelerado",
-    description:
-      "Impulsionamos seus resultados com marketing digital e tráfego pago. Transformamos visitas em leads, leads em clientes e clientes em receita.",
-    color: "#E6BF46",
-  },
-  {
-    number: "08",
-    title: "Evolução Contínua",
-    description:
-      "Monitoramos performance em tempo real e evoluímos constantemente. Seu sistema cresce junto com o seu negócio, sempre otimizado.",
-    color: "#E6BF46",
-  },
+  }
 ]
 
 export function Steps() {

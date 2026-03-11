@@ -5,7 +5,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 const OWNER_EMAIL = "atendimento@bkeeperads.com.br"
 
-// Email recebido por você
+// EMAIL QUE VOCÊ RECEBE (LEAD)
 function buildLeadEmailHtml(
   name: string,
   email: string,
@@ -13,92 +13,227 @@ function buildLeadEmailHtml(
   revenue: string,
   message: string
 ) {
+  const cleanPhone = phone ? phone.replace(/\D/g, "") : ""
+
   return `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #080808; color: #f5f0e8; padding: 32px; border-radius: 12px;">
-      <div style="text-align:center; margin-bottom: 28px;">
-        <h1 style="color: #E6BF46; font-size: 24px; margin: 0;">Bkeeper ADS</h1>
-        <p style="color: #888; font-size: 13px; margin-top: 4px;">Novo lead recebido pelo site</p>
-      </div>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
 
-      <table style="width:100%; border-collapse: collapse;">
-        <tr>
-          <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px; width: 140px;">Nome</td>
-          <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #f5f0e8; font-size: 14px; font-weight: 600;">${name}</td>
-        </tr>
+<body style="margin:0;background:#0b0b0b;font-family:'Nunito',Arial,sans-serif;padding:40px 0">
 
-        <tr>
-          <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px;">E-mail</td>
-          <td style="padding: 12px 0; border-bottom: 1px solid #242424; font-size: 14px;">
-            <a href="mailto:${email}" style="color:#E6BF46; text-decoration:none;">${email}</a>
-          </td>
-        </tr>
+<table width="100%">
+<tr>
+<td align="center">
 
-        <tr>
-          <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px;">Telefone</td>
-          <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #f5f0e8; font-size: 14px;">
-            ${phone || "Não informado"}
-          </td>
-        </tr>
+<table width="620" style="background:#111;border-radius:14px;padding:40px">
 
-        <tr>
-          <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #888; font-size: 13px;">Faturamento</td>
-          <td style="padding: 12px 0; border-bottom: 1px solid #242424; color: #f5f0e8; font-size: 14px; font-weight: 600;">
-            ${revenue}
-          </td>
-        </tr>
-      </table>
+<tr>
+<td align="center" style="padding-bottom:30px">
 
-      <div style="margin-top: 24px;">
-        <p style="color: #888; font-size: 13px; margin-bottom: 8px;">Mensagem:</p>
-        <div style="background: #111; border: 1px solid #242424; border-radius: 8px; padding: 16px; color: #f5f0e8; font-size: 14px; line-height: 1.6;">
-          ${message.replace(/\n/g, "<br/>")}
-        </div>
-      </div>
+<img src="https://bkeeperads.com.br/bee-icon.png" width="48" style="display:block;margin-bottom:10px"/>
 
-      <div style="margin-top: 32px; text-align: center;">
-        <a href="https://wa.me/5517991215076?text=Olá%20${encodeURIComponent(
-    name
-  )}" 
-        target="_blank"
-        style="display: inline-block; padding: 12px 28px; background: #E6BF46; color: #080808; font-weight: 700; border-radius: 8px; text-decoration: none; font-size: 14px;">
-          Responder via WhatsApp
-        </a>
-      </div>
-    </div>
-  `
+<div style="font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px">
+Bkeeper
+</div>
+
+<div style="font-size:11px;font-weight:800;color:#E6BF46;letter-spacing:4px;text-transform:uppercase">
+Ads
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td style="padding-bottom:30px">
+
+<div style="font-size:20px;font-weight:700;color:#ffffff;margin-bottom:6px">
+Novo lead recebido
+</div>
+
+<div style="font-size:13px;color:#8a8a8a">
+Lead enviado pelo formulário do site
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+<table width="100%" style="border-collapse:collapse">
+
+<tr>
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#888;font-size:13px;width:140px">
+Nome
+</td>
+
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#fff;font-weight:600">
+${name}
+</td>
+</tr>
+
+<tr>
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#888;font-size:13px">
+E-mail
+</td>
+
+<td style="padding:16px 0;border-bottom:1px solid #242424">
+<a href="mailto:${email}" style="color:#E6BF46;text-decoration:none">
+${email}
+</a>
+</td>
+</tr>
+
+<tr>
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#888;font-size:13px">
+Telefone
+</td>
+
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#fff">
+${phone || "Não informado"}
+</td>
+</tr>
+
+<tr>
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#888;font-size:13px">
+Faturamento
+</td>
+
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#fff;font-weight:600">
+${revenue}
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+
+<tr>
+<td style="padding-top:28px">
+
+<div style="font-size:13px;color:#888;margin-bottom:10px">
+Mensagem
+</div>
+
+<div style="background:#0b0b0b;border:1px solid #242424;border-radius:8px;padding:18px;color:#fff;font-size:14px;line-height:1.7">
+${message.replace(/\n/g, "<br/>")}
+</div>
+
+</td>
+</tr>
+
+${cleanPhone
+      ? `
+<tr>
+<td align="center" style="padding-top:35px">
+
+<a href="https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(name)}"
+style="
+display:inline-block;
+background:#E6BF46;
+color:#000;
+padding:14px 28px;
+border-radius:8px;
+font-weight:700;
+text-decoration:none;
+font-size:14px;
+">
+Conversar com cliente no WhatsApp
+</a>
+
+</td>
+</tr>
+`
+      : ""
+    }
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+`
 }
 
-// Email confirmação cliente
+// EMAIL DE CONFIRMAÇÃO PARA CLIENTE
 function buildClientEmailHtml(name: string) {
   return `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #080808; color: #f5f0e8; padding: 32px; border-radius: 12px;">
-      
-      <div style="text-align:center; margin-bottom: 28px;">
-        <h1 style="color:#E6BF46;">Bkeeper ADS</h1>
-      </div>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
 
-      <h2 style="font-size:20px; margin-bottom:12px;">
-        Olá ${name}, recebemos sua mensagem!
-      </h2>
+<body style="margin:0;background:#0b0b0b;font-family:'Nunito',Arial,sans-serif;padding:40px 0">
 
-      <p style="color:#ccc; line-height:1.6;">
-        Obrigado por entrar em contato com a <strong>Bkeeper ADS</strong>.
-        Nossa equipe analisará sua mensagem e retornará em breve.
-      </p>
+<table width="100%">
+<tr>
+<td align="center">
 
-      <div style="margin-top:28px; text-align:center;">
-        <a href="https://wa.me/5517991215076"
-        target="_blank"
-        style="display:inline-block; padding:12px 28px; background:#E6BF46; color:#080808; font-weight:700; border-radius:8px; text-decoration:none;">
-          Falar no WhatsApp
-        </a>
-      </div>
+<table width="600" style="background:#111;border-radius:14px;padding:40px">
 
-      <p style="margin-top:28px; font-size:12px; color:#555; text-align:center;">
-        © ${new Date().getFullYear()} Bkeeper ADS
-      </p>
-    </div>
-  `
+<tr>
+<td align="center" style="padding-bottom:30px">
+
+<img src="https://bkeeperads.com.br/bee-icon.png" width="48" style="display:block;margin-bottom:10px"/>
+
+<div style="font-size:22px;font-weight:900;color:#fff">
+Bkeeper
+</div>
+
+<div style="font-size:11px;font-weight:800;color:#E6BF46;letter-spacing:4px;text-transform:uppercase">
+Ads
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+<div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:14px">
+Olá ${name} 👋
+</div>
+
+<div style="color:#b8b8b8;line-height:1.7;font-size:15px">
+Recebemos sua mensagem e nossa equipe irá analisar seu pedido.
+</div>
+
+<div style="color:#b8b8b8;line-height:1.7;font-size:15px;margin-top:10px">
+Em breve entraremos em contato com você.
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td style="padding-top:32px">
+
+<div style="font-size:12px;color:#6a6a6a;text-align:center">
+© ${new Date().getFullYear()} Bkeeper ADS
+</div>
+
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+`
 }
 
 export async function POST(req: NextRequest) {
@@ -118,16 +253,16 @@ export async function POST(req: NextRequest) {
       phone,
       revenue,
       message,
-      company,   // honeypot
-      formTime   // tempo do formulário
+      company,
+      formTime
     } = body
 
-    // Honeypot anti bot
+    // Honeypot
     if (company) {
       return NextResponse.json({ success: true })
     }
 
-    // Delay anti bot (menos de 3s)
+    // Delay anti-bot
     if (formTime && formTime < 3000) {
       return NextResponse.json({ success: true })
     }
@@ -156,7 +291,7 @@ export async function POST(req: NextRequest) {
     const leadEmail = await resend.emails.send({
       from: "Bkeeper ADS <contato@bkeeperads.com.br>",
       to: [OWNER_EMAIL],
-      replyTo: [email],
+      replyTo: email,
       subject: `Novo lead do site - ${name}`,
       html: buildLeadEmailHtml(name, email, phone, revenue, message),
       text: `
@@ -169,7 +304,7 @@ Faturamento: ${revenue}
 
 Mensagem:
 ${message}
-      `
+`
     })
 
     if (leadEmail.error) {
@@ -189,10 +324,11 @@ Olá ${name},
 Recebemos sua mensagem e em breve nossa equipe irá responder.
 
 Bkeeper ADS
-      `
+`
     })
 
     return NextResponse.json({ success: true })
+
   } catch (err) {
     console.error("Erro no formulário:", err)
 
