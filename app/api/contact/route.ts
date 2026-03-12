@@ -184,7 +184,7 @@ function buildClientEmailHtml(name: string) {
 <tr>
 <td align="center" style="padding-bottom:30px">
 
-<img src="https://bkeeperads.com.br/bee-icon.png" width="48" style="display:block;margin-bottom:10px"/>
+<img src="https://iili.io/qY5tyCu.md.jpg" width="48" style="display:block;margin-bottom:10px"/>
 
 <div style="font-size:22px;font-weight:900;color:#fff">
 Bkeeper
