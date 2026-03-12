@@ -101,7 +101,7 @@ export function Steps() {
             <div className="absolute z-10 flex items-center justify-center rounded-full border-2 border-[#E6BF46] bg-[#080808]"
               style={{ width: 120, height: 120, left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
               <div className="text-center">
-                <div className="text-[#E6BF46] font-black text-xl leading-none">8</div>
+                <div className="text-[#E6BF46] font-black text-xl leading-none">5</div>
                 <div className="text-[#f5f0e8]/60 text-[10px] font-semibold tracking-widest uppercase mt-1">Passos</div>
               </div>
             </div>
