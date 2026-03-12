@@ -23,11 +23,11 @@ export function Footer() {
               </p>
               <ul className="flex flex-col gap-2.5">
                 {[
-                  "Tráfego Pago",
-                  "Desenvolvimento Web",
-                  "Apps Mobile",
-                  "Visão Computacional",
-                  "Realidade Aumentada",
+                  "Google Meu Negócio & SEO Local",
+                  "Desenvolvimento de Softwares (Web & Mobile)",
+                  "Automações & Integrações",
+                  "Estrutura de Conversões",
+                  "Tráfego Pago (Google & Meta Ads)"
                 ].map((item) => (
                   <li key={item}>
                     <a
@@ -49,41 +49,14 @@ export function Footer() {
                 <li className="text-sm text-[#f5f0e8]/50">+55 17 99121-5076</li>
                 <li>
                   <a
-                    href="mailto:bkeeperads.contato@gmail.com"
+                    href="mailto:atendimento@bkeeperads.com.br"
                     className="text-sm text-[#f5f0e8]/50 hover:text-[#E6BF46] transition-colors"
                   >
-                    bkeeperads.contato@gmail.com
+                    atendimento@bkeeperads.com.br
                   </a>
                 </li>
               </ul>
 
-              <div className="flex items-center gap-3 mt-6">
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="w-9 h-9 rounded-lg border border-[#242424] flex items-center justify-center text-[#f5f0e8]/50 hover:text-[#E6BF46] hover:border-[#E6BF46]/40 transition-all"
-                >
-                  <Instagram size={16} />
-                </a>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="w-9 h-9 rounded-lg border border-[#242424] flex items-center justify-center text-[#f5f0e8]/50 hover:text-[#E6BF46] hover:border-[#E6BF46]/40 transition-all"
-                >
-                  <Linkedin size={16} />
-                </a>
-                <a
-                  href="mailto:bkeeperads.contato@gmail.com"
-                  aria-label="Email"
-                  className="w-9 h-9 rounded-lg border border-[#242424] flex items-center justify-center text-[#f5f0e8]/50 hover:text-[#E6BF46] hover:border-[#E6BF46]/40 transition-all"
-                >
-                  <Mail size={16} />
-                </a>
-              </div>
             </div>
           </div>
         </div>

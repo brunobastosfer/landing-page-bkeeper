@@ -83,6 +83,7 @@ const services = [
       "Aplicativos Mobile (iOS & Android)",
       "Sistemas Web Personalizados",
       "APIs e Integrações",
+      "Realidade Aumentada"
     ],
   },
 ]
