@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { CheckCircle, ChevronRight, ChevronLeft, Clock } from "lucide-react"
+import { CheckCircle, ChevronRight, ChevronLeft, Clock, AlertCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { Logo } from "@/components/logo"
 
@@ -91,18 +91,23 @@ const questions: Question[] = [
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Answers = Record<number, string[]>
+type SendState = "idle" | "loading" | "error"
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function QuizPage() {
-  const [step, setStep] = useState<"quiz" | "done">("quiz")
+  const [step, setStep] = useState<"company" | "quiz" | "done">("company")
+  const [companyName, setCompanyName] = useState("")
+  const [companyError, setCompanyError] = useState("")
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Answers>({})
   const [countdown, setCountdown] = useState(10)
+  const [sendState, setSendState] = useState<SendState>("idle")
+  const [sendError, setSendError] = useState("")
 
   const question = questions[current]
-  const selected = answers[question.id] ?? []
-  const progress = ((current + 1) / questions.length) * 100
+  const selected = answers[question?.id] ?? []
+  const progress = step === "company" ? 0 : ((current + 1) / questions.length) * 100
   const isLast = current === questions.length - 1
 
   // countdown + redirect after done
@@ -135,9 +140,35 @@ export default function QuizPage() {
     }
   }
 
-  function goNext() {
+  function startQuiz() {
+    if (!companyName.trim()) {
+      setCompanyError("Informe o nome da sua empresa para continuar.")
+      return
+    }
+    setCompanyError("")
+    setStep("quiz")
+  }
+
+  async function goNext() {
     if (isLast) {
-      setStep("done")
+      setSendState("loading")
+      setSendError("")
+      try {
+        const res = await fetch("/api/quiz", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ companyName, answers }),
+        })
+        const json = await res.json()
+        if (!res.ok) throw new Error(json.error || "Erro ao enviar respostas")
+        setSendState("idle")
+        setStep("done")
+      } catch (err) {
+        setSendState("error")
+        setSendError(
+          err instanceof Error ? err.message : "Erro inesperado. Tente novamente."
+        )
+      }
       return
     }
     setCurrent((c) => c + 1)
@@ -145,6 +176,7 @@ export default function QuizPage() {
 
   function goBack() {
     if (current > 0) setCurrent((c) => c - 1)
+    else setStep("company")
   }
 
   const canAdvance = selected.length > 0
@@ -214,7 +246,90 @@ export default function QuizPage() {
     )
   }
 
-  // ── Quiz screen ──────────────────────────────────────────────────────────────
+  // ── Company name screen ────────────────────────────────────────────────────
+  if (step === "company") {
+    return (
+      <div className="min-h-screen bg-background honeycomb-bg flex flex-col">
+        <header className="flex items-center justify-between px-6 py-5 border-b border-[#1a1a1a]">
+          <Link href="/" aria-label="Voltar para o início">
+            <Logo />
+          </Link>
+        </header>
+
+        <div className="h-1 bg-[#1a1a1a] w-full">
+          <div className="h-1 bg-[#E6BF46] transition-all duration-500" style={{ width: "0%" }} />
+        </div>
+
+        <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+          <div
+            className="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(230,191,70,0.06) 0%, transparent 70%)" }}
+          />
+
+          <div className="relative z-10 w-full max-w-2xl flex flex-col gap-8">
+            <div className="text-center mb-2">
+              <h1 className="text-2xl md:text-3xl font-black text-balance leading-tight mb-2">
+                Responda rapidamente algumas perguntas para nos ajudar a entender melhor sua empresa e{" "}
+                <span className="gold-shimmer">preparar uma solução personalizada</span> para o seu negócio.
+              </h1>
+              <p className="text-[#f5f0e8]/50 text-sm mt-3 flex items-center justify-center gap-1.5">
+                <Clock size={14} />
+                Leva menos de 1 minuto.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-[#242424] bg-[#111111] p-8 flex flex-col gap-6">
+              <div>
+                <span className="inline-block px-3 py-1 rounded-full border border-[#E6BF46]/30 bg-[#E6BF46]/5 text-[#E6BF46] text-xs font-semibold mb-4">
+                  Antes de começar
+                </span>
+                <h2 className="text-xl md:text-2xl font-bold text-foreground leading-snug text-balance">
+                  Qual é o nome da sua empresa?
+                </h2>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <input
+                  type="text"
+                  value={companyName}
+                  onChange={(e) => {
+                    setCompanyName(e.target.value)
+                    if (companyError) setCompanyError("")
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && startQuiz()}
+                  placeholder="Ex: Minha Empresa Ltda"
+                  className={`w-full px-5 py-4 rounded-xl bg-[#1a1a1a] border text-foreground text-sm placeholder-[#555] focus:outline-none focus:ring-1 focus:ring-[#E6BF46]/30 transition-all ${
+                    companyError
+                      ? "border-red-500/60 focus:border-red-500"
+                      : "border-[#2e2e2e] focus:border-[#E6BF46]"
+                  }`}
+                />
+                {companyError && (
+                  <p className="flex items-center gap-1.5 text-red-400 text-xs">
+                    <AlertCircle size={13} />
+                    {companyError}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={startQuiz}
+                  className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-[#E6BF46] text-[#080808] text-sm font-bold hover:bg-[#c9a83a] transition-all gold-glow"
+                >
+                  Começar
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  // ── Quiz screen ─────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-background honeycomb-bg flex flex-col">
       {/* header */}
@@ -244,17 +359,12 @@ export default function QuizPage() {
         />
 
         <div className="relative z-10 w-full max-w-2xl flex flex-col gap-8">
-          {/* intro text (only on first question) */}
-          {current === 0 && (
-            <div className="text-center mb-2">
-              <h1 className="text-2xl md:text-3xl font-black text-balance leading-tight mb-2">
-                Responda rapidamente algumas perguntas para nos ajudar a entender melhor sua empresa e{" "}
-                <span className="gold-shimmer">preparar uma solução personalizada</span> para o seu negócio.
-              </h1>
-              <p className="text-[#f5f0e8]/50 text-sm mt-3 flex items-center justify-center gap-1.5">
-                <Clock size={14} />
-                Leva menos de 1 minuto.
-              </p>
+          {/* company name badge */}
+          {companyName && (
+            <div className="flex items-center justify-center gap-2">
+              <span className="px-4 py-1.5 rounded-full border border-[#E6BF46]/30 bg-[#E6BF46]/5 text-[#E6BF46] text-sm font-semibold">
+                {companyName}
+              </span>
             </div>
           )}
 
@@ -308,12 +418,20 @@ export default function QuizPage() {
               })}
             </div>
 
+            {/* send error */}
+            {sendState === "error" && (
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                <AlertCircle size={16} className="flex-shrink-0" />
+                {sendError}
+              </div>
+            )}
+
             {/* navigation */}
             <div className="flex items-center justify-between pt-2">
               <button
                 type="button"
                 onClick={goBack}
-                disabled={current === 0}
+                disabled={sendState === "loading"}
                 className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-[#2e2e2e] text-[#f5f0e8]/50 text-sm font-semibold hover:border-[#E6BF46]/30 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronLeft size={16} />
@@ -323,11 +441,25 @@ export default function QuizPage() {
               <button
                 type="button"
                 onClick={goNext}
-                disabled={!canAdvance}
+                disabled={!canAdvance || sendState === "loading"}
                 className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-[#E6BF46] text-[#080808] text-sm font-bold hover:bg-[#c9a83a] disabled:opacity-40 disabled:cursor-not-allowed transition-all gold-glow"
               >
-                {isLast ? "Enviar respostas" : "Próxima"}
-                <ChevronRight size={16} />
+                {sendState === "loading" ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Enviando...
+                  </>
+                ) : isLast ? (
+                  <>
+                    Enviar respostas
+                    <ChevronRight size={16} />
+                  </>
+                ) : (
+                  <>
+                    Próxima
+                    <ChevronRight size={16} />
+                  </>
+                )}
               </button>
             </div>
           </div>
