@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { CheckCircle, ChevronRight, ChevronLeft, AlertCircle, Loader2 } from "lucide-react"
+import { useState, useEffect } from "react"
+import { CheckCircle, ChevronRight, ChevronLeft, AlertCircle, Loader2, Clock } from "lucide-react"
 
 // ─── Questions ────────────────────────────────────────────────────────────────
 
@@ -96,15 +96,15 @@ type SendState = "idle" | "loading" | "error"
 interface QuizFormProps {
   /** Nome da empresa já coletado pelo formulário de contato */
   companyName: string
-  onComplete?: () => void
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function QuizForm({ companyName, onComplete }: QuizFormProps) {
+export function QuizForm({ companyName }: QuizFormProps) {
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Answers>({})
   const [done, setDone] = useState(false)
+  const [countdown, setCountdown] = useState(10)
   const [sendState, setSendState] = useState<SendState>("idle")
   const [sendError, setSendError] = useState("")
 
@@ -113,6 +113,22 @@ export function QuizForm({ companyName, onComplete }: QuizFormProps) {
   const progress = ((current + 1) / questions.length) * 100
   const isLast = current === questions.length - 1
   const canAdvance = selected.length > 0
+
+  // Countdown + reset ao finalizar
+  useEffect(() => {
+    if (!done) return
+    if (countdown <= 0) {
+      // Reseta para formulário inicial
+      setCurrent(0)
+      setAnswers({})
+      setDone(false)
+      setCountdown(10)
+      setSendError("")
+      return
+    }
+    const t = setTimeout(() => setCountdown((c) => c - 1), 1000)
+    return () => clearTimeout(t)
+  }, [done, countdown])
 
   function toggle(option: string) {
     const qid = question.id
@@ -147,7 +163,6 @@ export function QuizForm({ companyName, onComplete }: QuizFormProps) {
         if (!res.ok) throw new Error(json.error || "Erro ao enviar respostas")
         setSendState("idle")
         setDone(true)
-        onComplete?.()
       } catch (err) {
         setSendState("error")
         setSendError(
@@ -168,13 +183,36 @@ export function QuizForm({ companyName, onComplete }: QuizFormProps) {
   if (done) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-[#E6BF46]/10 border border-[#E6BF46]/30 flex items-center justify-center">
-          <CheckCircle size={32} className="text-[#E6BF46]" />
-        </div>
+        <CheckCircle size={52} className="text-[#E6BF46]" />
         <h3 className="text-xl font-bold text-foreground">Respostas enviadas!</h3>
         <p className="text-[#f5f0e8]/60 max-w-sm text-sm leading-relaxed">
           Recebemos tudo. Em breve um especialista da{" "}
           <strong className="text-foreground">Bkeeper ADS</strong> entrará em contato com uma solução personalizada para o seu negócio.
+        </p>
+        
+        {/* Countdown ring */}
+        <div className="relative w-16 h-16 mt-4">
+          <svg className="absolute inset-0" viewBox="0 0 60 60" style={{ transform: "rotate(-90deg)" }}>
+            <circle cx="30" cy="30" r="28" stroke="#2e2e2e" strokeWidth="2" fill="none" />
+            <circle
+              cx="30"
+              cy="30"
+              r="28"
+              stroke="#E6BF46"
+              strokeWidth="2"
+              fill="none"
+              strokeDasharray={`${(countdown / 10) * (2 * Math.PI * 28)} ${2 * Math.PI * 28}`}
+              className="transition-all duration-1000 ease-linear"
+            />
+          </svg>
+          <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-[#E6BF46]">
+            {countdown}s
+          </span>
+        </div>
+
+        <p className="text-[#f5f0e8]/40 text-xs flex items-center gap-1.5">
+          <Clock size={12} />
+          Você será redirecionado em {countdown}s...
         </p>
       </div>
     )

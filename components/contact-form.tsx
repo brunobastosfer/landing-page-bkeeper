@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { Send, CheckCircle, AlertCircle, Loader2, Clock, Sparkles } from "lucide-react"
 import { QuizForm } from "@/components/quiz-form"
 
-type FormState = "idle" | "loading" | "success" | "transitioning" | "quiz" | "error"
+type FormState = "idle" | "loading" | "transitioning" | "quiz" | "error"
 
 const revenueOptions = [
   "Menos de R$250.000 / ano",
@@ -93,15 +93,10 @@ export function ContactForm() {
 
       setSubmittedName(name)
       setSubmittedCompany(company)
-      setState("success")
+      setState("transitioning")
+      setTransitionCount(3)
       form.reset()
       formStartTime.current = Date.now()
-
-      // Após 2s de sucesso, inicia a transição para o quiz
-      setTimeout(() => {
-        setTransitionCount(3)
-        setState("transitioning")
-      }, 2000)
     } catch (err) {
       setState("error")
       setErrorMsg(
@@ -118,20 +113,7 @@ export function ContactForm() {
   // ── Conteúdo do painel direito (formulário / estados) ─────────────────────
 
   function renderPanel() {
-    // 1. Mensagem de sucesso
-    if (state === "success") {
-      return (
-        <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-          <CheckCircle size={52} className="text-[#E6BF46]" />
-          <h3 className="text-xl font-bold text-foreground">Mensagem enviada!</h3>
-          <p className="text-[#f5f0e8]/60 max-w-sm text-sm leading-relaxed">
-            Obrigado pelo contato, <strong className="text-foreground">{submittedName}</strong>. Nossa equipe retornará em breve.
-          </p>
-        </div>
-      )
-    }
-
-    // 2. Transição para o quiz
+    // 1. Transição para o quiz
     if (state === "transitioning") {
       return (
         <div className="flex flex-col items-center justify-center py-12 text-center gap-6">
@@ -168,7 +150,7 @@ export function ContactForm() {
       )
     }
 
-    // 3. Quiz inline
+    // 2. Quiz inline
     if (state === "quiz") {
       return (
         <div className="flex flex-col gap-4">
@@ -189,7 +171,7 @@ export function ContactForm() {
       )
     }
 
-    // 4. Formulário padrão (idle / loading / error)
+    // 3. Formulário padrão (idle / loading / error)
     return (
       <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
         {/* Honeypot anti-bot */}

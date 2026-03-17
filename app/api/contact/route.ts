@@ -274,11 +274,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true })
     }
 
-    // Delay anti-bot
-    if (formTime && formTime < 3000) {
-      return NextResponse.json({ success: true })
-    }
-
     if (!name?.trim() || !email?.trim() || !revenue?.trim() || !message?.trim()) {
       return NextResponse.json(
         { error: "Preencha todos os campos obrigatórios." },
