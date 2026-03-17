@@ -11,7 +11,8 @@ function buildLeadEmailHtml(
   email: string,
   phone: string | undefined,
   revenue: string,
-  message: string
+  message: string,
+  companyName?: string
 ) {
   const cleanPhone = phone ? phone.replace(/\D/g, "") : ""
 
@@ -85,6 +86,16 @@ E-mail
 <a href="mailto:${email}" style="color:#E6BF46;text-decoration:none">
 ${email}
 </a>
+</td>
+</tr>
+
+<tr>
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#888;font-size:13px">
+Empresa
+</td>
+
+<td style="padding:16px 0;border-bottom:1px solid #242424;color:#fff;font-weight:600">
+${companyName || "Não informado"}
 </td>
 </tr>
 
@@ -253,6 +264,7 @@ export async function POST(req: NextRequest) {
       phone,
       revenue,
       message,
+      companyName,
       company,
       formTime
     } = body
@@ -293,11 +305,12 @@ export async function POST(req: NextRequest) {
       to: [OWNER_EMAIL],
       replyTo: email,
       subject: `Novo lead do site - ${name}`,
-      html: buildLeadEmailHtml(name, email, phone, revenue, message),
+      html: buildLeadEmailHtml(name, email, phone, revenue, message, companyName),
       text: `
 Novo lead recebido
 
 Nome: ${name}
+Empresa: ${companyName || "Não informado"}
 Email: ${email}
 Telefone: ${phone || "Não informado"}
 Faturamento: ${revenue}
