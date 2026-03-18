@@ -126,7 +126,7 @@ export function ContactForm() {
               Aguarde um pouco...
             </h3>
             <p className="text-[#f5f0e8]/60 max-w-xs text-sm leading-relaxed">
-              Estamos carregando um formulário personalizado para você.
+              Estamos carregando um diagnóstico personalizado para você.
             </p>
           </div>
 
@@ -156,7 +156,7 @@ export function ContactForm() {
         <div className="flex flex-col gap-4">
           <div className="border-b border-[#1e1e1e] pb-4">
             <span className="inline-block px-3 py-1 rounded-full border border-[#E6BF46]/30 bg-[#E6BF46]/5 text-[#E6BF46] text-xs font-semibold mb-2">
-              Formulário personalizado
+              Diagnóstico
             </span>
             <h3 className="text-base font-bold text-foreground text-balance">
               Responda algumas perguntas rápidas para nos ajudar a preparar a melhor solução para o seu negócio.
