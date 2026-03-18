@@ -105,8 +105,8 @@ export function Hero() {
         <div className="mt-16 grid grid-cols-3 gap-6 max-w-lg mx-auto">
           {[
             { value: "+100.000", label: "Leads gerados para clientes" },
-            { value: "+150", label: "Empresas atendidas" },
-            { value: "+4M", label: "Investidos em anúncios gerenciados" },
+            { value: "+120", label: "Empresas atendidas" },
+            { value: "+7M", label: "Investidos em anúncios gerenciados" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-2xl md:text-3xl font-black" style={{ color: "#E6BF46" }}>

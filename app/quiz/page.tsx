@@ -437,6 +437,7 @@ export default function QuizPage() {
                 <ChevronLeft size={16} />
                 Voltar
               </button>
+
               <button
                 type="button"
                 onClick={goNext}
