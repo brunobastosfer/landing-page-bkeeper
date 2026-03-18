@@ -128,6 +128,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
+    console.log("[v0] Quiz body recebido:", JSON.stringify(body, null, 2))
     const { companyName, answers } = body as {
       companyName: string
       answers: Record<number, string[]>
@@ -147,6 +148,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    console.log("[v0] Enviando email do quiz para:", OWNER_EMAIL)
     const result = await resend.emails.send({
       from: "Bkeeper ADS <contato@bkeeperads.com.br>",
       to: [OWNER_EMAIL],
@@ -157,6 +159,7 @@ export async function POST(req: NextRequest) {
         .join("\n"),
     })
 
+    console.log("[v0] Resultado do email:", result)
     if (result.error) {
       console.error("Erro ao enviar quiz:", result.error)
       throw new Error("Erro ao enviar quiz")
