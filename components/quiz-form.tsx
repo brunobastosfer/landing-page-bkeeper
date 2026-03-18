@@ -154,12 +154,16 @@ export function QuizForm({ companyName }: QuizFormProps) {
       setSendState("loading")
       setSendError("")
       try {
+        console.log("[v0] Enviando quiz:", { companyName, answers })
         const res = await fetch("/api/quiz", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ companyName, answers }),
         })
-        const json = await res.json()
+        console.log("[v0] Status da resposta:", res.status)
+        const text = await res.text()
+        console.log("[v0] Resposta bruta:", text)
+        const json = JSON.parse(text)
         if (!res.ok) throw new Error(json.error || "Erro ao enviar respostas")
         setSendState("idle")
         setDone(true)
@@ -168,6 +172,7 @@ export function QuizForm({ companyName }: QuizFormProps) {
         setSendError(
           err instanceof Error ? err.message : "Erro inesperado. Tente novamente."
         )
+        console.error("[v0] Erro ao enviar quiz:", err)
       }
       return
     }
