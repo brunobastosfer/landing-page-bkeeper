@@ -166,7 +166,10 @@ export function ContactForm() {
               Leva menos de 1 minuto.
             </p>
           </div>
-          <QuizForm companyName={submittedCompany || submittedName} />
+          <QuizForm 
+            companyName={submittedCompany || submittedName}
+            onComplete={() => setState("idle")}
+          />
         </div>
       )
     }

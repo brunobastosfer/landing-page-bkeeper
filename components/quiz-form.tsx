@@ -96,11 +96,13 @@ type SendState = "idle" | "loading" | "error"
 interface QuizFormProps {
   /** Nome da empresa já coletado pelo formulário de contato */
   companyName: string
+  /** Callback chamado quando o countdown termina, para retornar ao formulário inicial */
+  onComplete?: () => void
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function QuizForm({ companyName }: QuizFormProps) {
+export function QuizForm({ companyName, onComplete }: QuizFormProps) {
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Answers>({})
   const [done, setDone] = useState(false)
@@ -118,17 +120,13 @@ export function QuizForm({ companyName }: QuizFormProps) {
   useEffect(() => {
     if (!done) return
     if (countdown <= 0) {
-      // Reseta para formulário inicial
-      setCurrent(0)
-      setAnswers({})
-      setDone(false)
-      setCountdown(10)
-      setSendError("")
+      // Chama callback para retornar ao formulário inicial
+      onComplete?.()
       return
     }
     const t = setTimeout(() => setCountdown((c) => c - 1), 1000)
     return () => clearTimeout(t)
-  }, [done, countdown])
+  }, [done, countdown, onComplete])
 
   function toggle(option: string) {
     const qid = question.id
